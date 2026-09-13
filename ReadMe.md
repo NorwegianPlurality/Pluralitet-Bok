@@ -2,6 +2,41 @@ Lesmeg for *Plurality: The Future of Collaborative Technology and Democracy* av 
 
 Velkommen til *Plurality*, et åpent, git-basert samarbeidsprosjekt om en bok som ønsker å tegne et bilde av fremtidens teknologi – en fremtid der vi styrker og bygger bro over sosiale forskjeller i stedet for å la dem splitte oss. Selve innholdet i boken er beskrevet andre steder (se https://www.plurality.net). Denne Lesmeg-filen skal i stedet gi en oversikt over samarbeidet rundt boken, til hjelp for alle som ønsker å bidra.
 
+# Slik bidrar du til den norske oversettelsen
+
+Boken oversettes i to trinn, og hvert kapittel har samme filnavn i alle tre mappene:
+
+    contents/english/             originalen fra rot-repoet, endres ikke her
+      ↓  trinn 1: forenkling
+    contents/simplified-english/  kortere og enklere engelsk, samme innhold
+      ↓  trinn 2: oversettelse
+    contents/norwegian/           norsk bokmål
+
+Én jobb er ett kapittel i ett trinn, på én gren, i én pull request — for eksempel grenen
+`translate/3-2`, som bare endrer `contents/norwegian/3-2-connected-society.md`. Alle
+kapitler kan arbeides med samtidig; ingen kapitler venter på hverandre.
+
+Se hva som kan startes akkurat nå:
+
+```bash
+vp run translation:next
+```
+
+Sjekk arbeidet ditt før du åpner en pull request:
+
+```bash
+vp run translation:validate
+```
+
+Faste termer ligger i `translation/glossary.tsv`, og norske kapitteltitler i
+`translation/chapter-titles.tsv`. Begge er felles beslutninger — foreslå nye termer i
+`translation/proposals/<kapittel>.tsv` i stedet for å endre ordlisten fra en kapittelgren.
+
+Fullstendige instrukser, for både mennesker og AI-assistenter, ligger i
+[AGENTS.md](AGENTS.md). Detaljer per trinn ligger i [docs/translation/](docs/translation/).
+Bidragsytere som bruker en ren chat-assistent uten tilgang til repoet finner ferdige
+ledetekster i [docs/translation/prompts/](docs/translation/prompts/).
+
 # Oversikt
 
 Prosjektet ledes i starten av Audrey Tang (Taiwans første digitaliseringsminister, se https://digitalminister.one) og E. Glen Weyl (se https://www.glenweyl.com). Planen er likevel å gradvis desentralisere kontrollen over prosjektet ved hjelp av en ny, git-native styringsprotokoll kalt Gov4Git (se https://github.com/gov4git/gov4git), som bygger på blokkjede-lignende mekanismer. Vi sikter mot full fellesskapsstyring når boken trykkes i fysisk form. Alt materiale her er lisensiert under CC0, og vi håper at folk som snakker andre språk enn engelsk, eller som tilhører andre språklige undergrupper (for eksempel trossamfunn eller fagmiljøer vi selv kjenner mindre til), vil forke dette repoet og lage sine egne versjoner – styrt etter de samme prinsippene. Denne norske oversettelsen (finnes i `contents/norwegian/`) er nettopp et slikt bidrag. Under følger en nærmere gjennomgang av hvert av disse punktene, med lenker til relevant materiale.
