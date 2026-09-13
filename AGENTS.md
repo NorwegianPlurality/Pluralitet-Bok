@@ -106,10 +106,18 @@ Contributors using a chat-only assistant can copy a ready-made prompt from
 of the glossary, and paste the result back into the correct file. The checker enforces the
 same rules either way.
 
+## Branches
+
+`main` mirrors `upstream/main` exactly and never takes a fork commit. `norwegian` is the
+default branch and where all work lands. Per-chapter branches start from `norwegian` and
+merge back into it — including stage 1 work, which does *not* go to the `simplify` branch.
+
 ## Reference
 
 - `docs/translation/simplify.md` — stage 1 in detail
 - `docs/translation/translate.md` — stage 2 in detail
 - `docs/translation/review.md` — what a reviewer checks
+- `docs/translation/publication-branches.md` — design note for a future simplified-English
+  edition branch; not set up yet
 - `translation/glossary.tsv` — term decisions
 - `translation/chapter-titles.tsv` — chapter ids and Norwegian titles
