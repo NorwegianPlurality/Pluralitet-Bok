@@ -1,0 +1,2 @@
+translation/proposals/*.tsv  merge=union
+translation/progress.tsv     merge=ours   linguist-generated=true

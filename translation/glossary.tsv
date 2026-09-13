@@ -1,0 +1,163 @@
+en_term	no_term	policy	family	first_use	note
+⿻	⿻	keep	plurality	3-0	Always the symbol, never spelled out. Screen readers get <span aria-label="Plurality">⿻</span>.
+Plurality	pluralitet	gloss	plurality	1	Book title and the concept. Keep English on first use in each part, then pluralitet.
+plural	mangfoldig	translate	plurality	1	Adjective. See note on the mangfold collision under Social Diversity.
+⿻ Approach	⿻-tilnærmingen	translate	plurality-compound		⿻ compounds take a hyphen before the Norwegian noun.
+⿻ Voting	⿻ Stemmegivning	translate	plurality-compound	5-6	Chapter 5-6 title. Registered in chapter-titles.tsv.
+⿻ Publics	⿻ Offentligheter	translate	plurality-compound	4-2	Chapter 4-2 title.
+⿻ Society	⿻-samfunnet	translate	plurality-compound		
+⿻ Technology	⿻-teknologi	translate	plurality-compound		
+⿻ Governance	⿻-styring	translate	plurality-compound		
+⿻ Property	⿻-eiendom	translate	plurality-compound		
+⿻ Funding	⿻-finansiering	translate	plurality-compound		
+⿻ Identity	⿻-identitet	translate	plurality-compound		
+⿻ Media	⿻-medier	translate	plurality-compound		
+⿻ Good	⿻-gode	translate	plurality-compound		
+⿻ Future	⿻-framtiden	translate	plurality-compound		
+Quadratic Voting	Kvadratisk Stemmegivning	gloss	mechanism	2-2	Established: "Kvadratisk Stemmegivning (Quadratic Voting)" on first use.
+Quadratic Funding	Kvadratisk Finansiering	gloss	mechanism		Parallel to Quadratic Voting; keep the pair consistent.
+Approval Voting	godkjenningsvalg	translate	mechanism		
+Prediction Market	prediksjonsmarked	translate	mechanism		
+Sortition	loddtrekning	translate	mechanism		
+Proportional Representation	forholdstallsvalg	translate	mechanism		
+Social Welfare Function	sosial velferdsfunksjon	translate	mechanism		
+Supermodularity	supermodularitet	translate	concept		
+Emergence	emergens	translate	concept		
+Deliberation	deliberasjon	translate	concept	2-2	Established in 2-2. Not "drøfting".
+Augmented Deliberation	Utvidet deliberasjon	translate	concept	5-4	Chapter 5-4 title.
+Civil Society	sivilsamfunn	translate	polity	2-1	Established in 2-1.
+Democracy	demokrati	translate	polity		
+Digital Democracy	digitalt demokrati	translate	polity	2-2	
+Authoritarianism	autoritarianisme	translate	ideology		
+Libertarianism	Libertarianisme	translate	ideology	3-0	Capitalised in source when naming the ideology as an actor; follow the English.
+Technocracy	Teknokrati	translate	ideology	3-0	Paired with Libertarianisme throughout; translate the pair together.
+Capitalism	kapitalisme	translate	ideology		
+Socialism	sosialisme	translate	ideology		
+Neoliberalism	nyliberalisme	translate	ideology		
+Nationalism	nasjonalisme	translate	ideology		
+Social Diversity	sosialt mangfold	translate	diversity		COLLISION: mangfold also renders "plural". Prefer mangfold for diversity; use mangfoldig for the adjective "plural".
+Cultural Diversity	kulturelt mangfold	translate	diversity		
+Biodiversity	biologisk mangfold	translate	diversity		
+Social Difference	sosial forskjell	translate	diversity		
+Heterogeneity	heterogenitet	translate	diversity		
+Polarization	polarisering	translate	pathology	2-1	
+Affective Polarization	affektiv polarisering	translate	pathology		
+Political Polarization	politisk polarisering	translate	pathology		
+Echo Chamber	ekkokammer	translate	pathology		
+Digital Divide	digitalt skille	translate	pathology		
+Surveillance	overvåking	translate	pathology		
+Monopolization	monopolisering	translate	pathology		
+Antitrust	konkurranselovgivning	translate	policy		Not "antitrust"; Norwegian legal usage.
+Externalities	eksternaliteter	translate	economics		
+Redistribution	omfordeling	translate	economics		
+Public Goods	fellesgoder	translate	economics		
+Private Property	privat eiendom	translate	economics		
+Property Rights	eiendomsrett	translate	economics		
+Collective bargaining	kollektive forhandlinger	translate	economics		
+Labor Unions	fagforeninger	translate	economics		
+Venture Capital	venturekapital	translate	economics		
+Entrepreneurship	entreprenørskap	translate	economics		
+Public Sector	offentlig sektor	translate	economics		
+Private Sector	privat sektor	translate	economics		
+Third Sector	tredje sektor	translate	economics		
+Gross Domestic Product (GDP)	bruttonasjonalprodukt (BNP)	translate	economics		
+Privacy	personvern	translate	rights	2-1	Established in 2-1. Not "privatliv" in the data-protection sense.
+Human Rights	menneskerettigheter	translate	rights		
+Free speech	ytringsfrihet	translate	rights		
+Anonymity	anonymitet	translate	rights		
+Identity	identitet	translate	rights		
+Personhood	personstatus	translate	rights	4-1	Chapter 4-1 pairs this with identitet.
+Contextual Integrity	kontekstuell integritet	translate	rights		
+Social Media	sosiale medier	translate	technology	2-0	
+Social Network	sosialt nettverk	translate	technology		
+Search Engines	søkemotorer	translate	technology		
+Open Source	åpen kildekode	translate	technology	0-2	Established in 0-2.
+Blockchain	blokkjede	translate	technology		
+Cryptography	kryptografi	translate	technology	2-0	
+Cryptocurrency	kryptovaluta	translate	technology		
+Smart Contract	smartkontrakt	translate	technology		
+Artificial Intelligence (AI)	kunstig intelligens (KI)	translate	technology	2-2	KI, not AI, per established usage in 2-2.
+Large Language Model (LLM)	stor språkmodell	gloss	technology		Keep LLM in parentheses on first use.
+Generative Foundation Models (GFMs)	generative grunnmodeller	gloss	technology		Keep GFM in parentheses on first use.
+Neural Network	nevralt nettverk	translate	technology		
+Federated Learning	føderert læring	translate	technology		
+Virtual Reality (VR)	virtuell virkelighet (VR)	translate	technology		
+Augmented Reality (AR)	utvidet virkelighet (AR)	translate	technology		
+Immersive Shared Reality	Oppslukende delt virkelighet	translate	technology	5-2	Chapter 5-2 title.
+Post-Symbolic Communication	Post-symbolsk kommunikasjon	translate	technology	5-1	Chapter 5-1 title.
+Digital Public Infrastructure (DPI)	digital fellesinfrastruktur	gloss	technology		Keep DPI in parentheses on first use.
+Verifiable Credentials (VCs)	verifiserbare legitimasjoner	gloss	technology		
+Packet Switching	pakkesvitsjing	translate	technology		
+Time-sharing	tidsdeling	translate	technology		
+Hypertext	hypertekst	translate	technology		
+Climate Change	klimaendringer	translate	environment		
+Public Participation	folkelig deltakelse	translate	polity		
+Hackathon	hackathon	keep	practice		Norwegian plural: hackathoner (established in 2-2).
+Web3	Web3	keep	brand		
+Bitcoin	Bitcoin	keep	brand		
+Ethereum	Ethereum	keep	brand		
+GitHub	GitHub	keep	brand		
+GitCoin	GitCoin	keep	brand		
+Linux	Linux	keep	brand		
+Windows	Windows	keep	brand		
+Wikipedia	Wikipedia	keep	brand		
+Mastodon	Mastodon	keep	brand		
+Slack	Slack	keep	brand		
+LinkedIn	LinkedIn	keep	brand		
+Twitter	Twitter	keep	brand		Source writes "X (formerly Twitter)"; render as "X (tidligere Twitter)".
+Microsoft	Microsoft	keep	brand		
+Google	Google	keep	brand		
+Apple	Apple	keep	brand		
+Meta	Meta	keep	brand		
+OpenAI	OpenAI	keep	brand		
+Anthropic	Anthropic	keep	brand		
+IBM	IBM	keep	brand		
+NASA	NASA	keep	org		
+Xerox PARC	Xerox PARC	keep	org		
+ARPANET	ARPANET	keep	org		
+Polis	Polis	keep	tool	2-2	The pol.is tool, not the Greek polis. Do not translate.
+g0v	g0v	keep	org	2-1	Pronounced "gov-zero". Norwegian: g0v-fellesskapet.
+Gaia-X	Gaia-X	keep	org		
+India Stack	India Stack	keep	org		
+RadicalxChange	RadicalxChange	keep	org		
+V-Dem	V-Dem	keep	org		
+OECD	OECD	keep	org		
+Snow Crash	Snow Crash	keep	work		Novel title; italicise, do not translate.
+Star Trek	Star Trek	keep	work		
+Miraikan	Miraikan	keep	place		
+Taiwan	Taiwan	keep	place	2-1	
+Yushan	Yushan	keep	place	2-1	
+Estonia	Estland	translate	place		
+Germany	Tyskland	translate	place		
+Soviet Union	Sovjetunionen	translate	place		
+United States (US)	USA	translate	place		
+United Nations (UN)	FN	translate	org		
+People's Republic of China (PRC)	Folkerepublikken Kina	translate	place		
+Chinese Communist Party (CCP)	Kinas kommunistparti	translate	org		
+Scandinavian Countries	de skandinaviske landene	translate	place		
+Mandarin	mandarin	translate	language		
+Hakka	hakka	translate	language		
+Taigi	taigi	translate	language		
+Sunflower Movement	Solsikkebevegelsen	translate	event	2-1	
+Cold War	den kalde krigen	translate	event		
+COVID-19 pandemic	covid-19-pandemien	translate	event		
+Ministry of Digital Affairs	Digitaliseringsdepartementet	translate	org	2-2	Taiwan's moda. Norwegian ministry naming convention.
+Distributed Autonomous Organization (DAO)		todo	technology		Collides with "Dao" (the Way) used in 0-2 and 4-5. Decide a rendering that keeps them distinct.
+Dao		todo	concept	0-2	The Way. Kept as "Dao" in 0-2 title "Finn din Dao". Confirm against the DAO collision above.
+bridging		todo	social-capital		Must be decided together with "bonding" — they are a contrastive pair.
+bonding		todo	social-capital		See "bridging".
+(In)dividual		todo	concept		Typographic play on individual/dividual; needs a Norwegian construction that preserves it.
+Rough Consensus		todo	practice		
+Narrow Corridor		todo	concept		Acemoglu/Robinson term; check for an established Norwegian translation of the book.
+Edge of Chaos		todo	concept		
+Connected Society		todo	polity	3-2	Chapter 3-2 title; register in chapter-titles.tsv when decided.
+Adaptive Administration		todo	polity	5-5	Chapter 5-5 title.
+Social Markets		todo	economics	5-7	Chapter 5-7 title, already claimed as "Sosiale markeder" in links.
+Collective Decision		todo	concept		
+Common Knowledge		todo	concept		
+Public Square		todo	polity		
+Social Fabric		todo	concept		
+Regenerating Diversity		todo	diversity		
+Data Coalitions		todo	technology		
+Decentralized Identity		todo	technology		
+Intrapreneurship		todo	economics		
