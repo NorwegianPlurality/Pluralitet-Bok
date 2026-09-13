@@ -1,18 +1,18 @@
-ReadMe for *Plurality: The Future of Collaborative Technology and Democracy* by Audrey Tang, E. Glen Weyl and the Plurality Community
+Lesmeg for *Plurality: The Future of Collaborative Technology and Democracy* av Audrey Tang, E. Glen Weyl og Plurality-fellesskapet
 
-Welcome to *Plurality*, an open, git-based collaborative book project that aims to offer a vision for the future of technology focused around empowering and bridging social difference.  While we have outlined the substance of the book elsewhere (see https://www.plurality.net), the purpose of this ReadMe is to provide an overview of the collaboration that will help create the book aimed at those who will participate in doing so.
+Velkommen til *Plurality*, et åpent, git-basert samarbeidsprosjekt om en bok som ønsker å tegne et bilde av fremtidens teknologi – en fremtid der vi styrker og bygger bro over sosiale forskjeller i stedet for å la dem splitte oss. Selve innholdet i boken er beskrevet andre steder (se https://www.plurality.net). Denne Lesmeg-filen skal i stedet gi en oversikt over samarbeidet rundt boken, til hjelp for alle som ønsker å bidra.
 
-# Overview
+# Oversikt
 
-The initial maintainers of this project are Audrey Tang (Taiwan's 1st Digital Minister, see https://digitalminister.one) and E. Glen Weyl (see https://www.glenweyl.com).   However, we plan to progressively decentralize control of the project using a new git-native formal governance protocol using blockchain-like affordances called Gov4Git (see https://github.com/gov4git/gov4git).  We plan to transition to full community control when we print physical copies of the book.  All material here is CC0 and we hope that speakers of languages other than English and from other sub-linguistic cultures (e.g. religious communities, academic disciplines that we are less familiar with, etc.) will fork this repo and build their own versions, governed according to the same principles.  In what follows we discuss each of these points and provide further links to relevant materials.
+Prosjektet ledes i starten av Audrey Tang (Taiwans første digitaliseringsminister, se https://digitalminister.one) og E. Glen Weyl (se https://www.glenweyl.com). Planen er likevel å gradvis desentralisere kontrollen over prosjektet ved hjelp av en ny, git-native styringsprotokoll kalt Gov4Git (se https://github.com/gov4git/gov4git), som bygger på blokkjede-lignende mekanismer. Vi sikter mot full fellesskapsstyring når boken trykkes i fysisk form. Alt materiale her er lisensiert under CC0, og vi håper at folk som snakker andre språk enn engelsk, eller som tilhører andre språklige undergrupper (for eksempel trossamfunn eller fagmiljøer vi selv kjenner mindre til), vil forke dette repoet og lage sine egne versjoner – styrt etter de samme prinsippene. Denne norske oversettelsen (finnes i `contents/norwegian/`) er nettopp et slikt bidrag. Under følger en nærmere gjennomgang av hvert av disse punktene, med lenker til relevant materiale.
 
-# Copyright
+# Opphavsrett
 
-All materials in this repo and in all other parts of this project (unless explicitly stated otherwise) are in the public domain; a CC0 license appears in this repo and most of the related software has a GPL.  We strongly encourage translations, both to other languages and to other cultural genres, whether in terms of formatting (fiction, journalism, etc.) or to different communities (religious, ethnic, disciplinary, etc.).  While these "forks" can do whatever they wish with this public domain material, we plan to link to and "recognize" only a smaller group of projects that align to the root in terms of content, values, management style and copyrights.  We hope this link and roots will remain relevant and respected because of the legitimacy this community will achieve through its principles and writing. 
+Alt materiale i dette repoet, og i resten av prosjektet for øvrig (med mindre annet er uttrykkelig oppgitt), er i det fri (public domain). En CC0-lisens ligger i repoet, og det meste av tilhørende programvare er GPL-lisensiert. Vi oppfordrer sterkt til oversettelser – både til andre språk og til andre kulturelle sjangre, enten det gjelder format (skjønnlitteratur, journalistikk osv.) eller målgruppe (religiøse, etniske eller faglige fellesskap osv.). Slike «forker» står fritt til å gjøre hva de vil med dette fritt tilgjengelige materialet, men vi kommer bare til å lenke til og «anerkjenne» et mindre utvalg prosjekter som holder seg tett på rot-prosjektets innhold, verdier, styringsform og opphavsrett. Vi håper denne tilknytningen til roten vil forbli relevant og respektert, fordi fellesskapet opparbeider seg legitimitet gjennom sine prinsipper og sin skrivning.
 
-# Citation 
+# Sitering
 
-To cite this text, you can use this bibtex as a sample
+For å sitere denne teksten kan du bruke denne bibtex-malen:
 
 ```bibtex
 @online{plurality2023,
@@ -24,70 +24,65 @@ To cite this text, you can use this bibtex as a sample
 }
 ```
 
-# Identity and credit
+# Identitet og anerkjennelse
 
-While this project will begin as a traditional open source community, we eventually hope to provide more formal governance, participation, control rights and recognition of contributions than has been customary in such projects.  We believe such features are important for open source projects like this one to sustainably scale while staying true to their values.  As such, a primary goal of our management of this project will be to clearly and (for the most part) publicly recognize contributions with both qualitative (viz. what kind of contribution was made) and quantitative (viz. how important was the contribution) tokens.  However, these tokens cannot be traded/transferred directly across users; they are relevant only to governance of and participation in this community and are not intended to have any external financial value, except through the value of the community as a whole.  As is discussed further below, as well as in the book, we may raise some funds to support the community and the community will govern these funds.  However, credit is a marker of contribution and entitlement to governance, not to direct external financial gain.
+Prosjektet starter som et tradisjonelt åpen kildekode-fellesskap, men målet på sikt er å tilby mer formell styring, medbestemmelse, kontrollrettigheter og anerkjennelse av bidrag enn det som er vanlig i slike prosjekter. Vi mener slike mekanismer er viktige for at prosjekter som dette skal kunne vokse bærekraftig uten å miste sine verdier på veien. Derfor vil et hovedmål i forvaltningen av prosjektet være å anerkjenne bidrag tydelig og – for det meste – offentlig, både kvalitativt (hva slags bidrag som er gitt) og kvantitativt (hvor stort bidraget var), gjennom såkalte tokens. Disse tokenene kan derimot ikke handles eller overføres direkte mellom brukere; de er kun relevante for styring av og deltakelse i dette fellesskapet, og er ikke ment å ha noen ekstern økonomisk verdi utover verdien av fellesskapet som helhet. Som beskrevet nærmere under, og i selve boken, kan det bli aktuelt å samle inn noe midler til støtte for fellesskapet, og disse midlene vil i så fall forvaltes av fellesskapet selv. Anerkjennelse er altså et mål på bidrag og rett til medbestemmelse – ikke en vei til direkte økonomisk gevinst.
 
-Contributions will be of many kinds.  While we cannot hope to anticipate them all types of contributions, here is a short sampling that provides a sense for the range we expect:
-* Translations of the book to other languages and subcultures.
-* Research assistance for and editing of the root text.
-* Thoughtful and accurate prioritization of issues and pull requests.
-* Contributing to or helping maintain the website interface for the book.
-* Graphical design of elements of the book, including visual contributions and figures.
-* Managing data engines and data visualization.
-* Project management of interaction of these elements
-* Contributing to the tools and platforms that support the collaborative process.
+Bidrag kan komme i mange former. Vi kan ikke forutse alle typer bidrag, men her er noen eksempler som gir et bilde av bredden vi forventer:
+* Oversettelse av boken til andre språk og undergrupper.
+* Research- og redaksjonell hjelp til rot-teksten.
+* Gjennomtenkt og presis prioritering av saker (issues) og endringsforslag (pull requests).
+* Bidrag til, eller vedlikehold av, nettsidegrensesnittet for boken.
+* Grafisk design av elementer i boken, inkludert visuelle bidrag og figurer.
+* Forvaltning av dataverktøy og datavisualisering.
+* Prosjektledelse for samspillet mellom disse elementene.
+* Bidrag til verktøyene og plattformene som støtter selve samarbeidsprosessen.
 
-Quality of contributions and thus quantity of recognition will largely (with some exceptions discussed below) begin as a discretionary choice of the maintainers.  However, we eventually hope to transition an increasing range of the mechanisms through which we give out such recognition to formal community governance, as part of the governance and progressive decentralization below.
+I starten vil kvaliteten på bidragene – og dermed omfanget av anerkjennelsen – i stor grad bero på et skjønnsmessig valg fra prosjektlederne (med noen unntak omtalt lenger ned). På sikt håper vi likevel å overføre stadig flere av mekanismene for anerkjennelse til formell fellesskapsstyring, som en del av den gradvise desentraliseringen omtalt under.
 
-All identity roles and credit will initially be public (possibly pseudonymous, but with no internal privacy controls).  We hope to introduce some innovative privacy features consistent with the ideas in the book (such as designated verifier signatures) in the future.
+Alle identitetsroller og all anerkjennelse vil i utgangspunktet være offentlig (eventuelt pseudonym, men uten interne personverninnstillinger). Vi håper på sikt å innføre nyskapende personvernløsninger i tråd med ideene i boken (som såkalte designated verifier-signaturer – signaturer som bare kan bekreftes av en bestemt mottaker).
 
+# Redigering og endringsforslag
 
+Selv om det finnes mange typer bidrag, er nok redigering av rot-boken det mest sentrale og vanligste. Dette skjer gjennom den vanlige git-prosessen med fork, endringsforslag (pull request) og sammenslåing (merge), som er godt dokumentert andre steder på nettet og derfor ikke gjennomgås i detalj her. Flere av de viktigste kildene til anerkjennelse og bidrag henger sammen med nettopp denne prosessen, og fortjener derfor litt mer oppmerksomhet her.
 
-# Editing and pull requests
+Målet med boken er å skape en ny visjon for teknologiens fremtid – en visjon som kan inspirere et fellesskap til å forfølge og virkeliggjøre den. Vi sikter først og fremst ikke mot en objektiv fastsettelse av fakta eller konsensus, selv om vi håper å bidra til å synliggjøre fakta og fremme samarbeid på tvers av uenighet. Derfor vil vi strebe etter å beholde en sammenhengende argumentasjon og en enhetlig forfatterstemme, fremfor å sy sammen separate bidrag fra ulike forfattere. Vi mener likevel at et slikt mål er fullt forenlig med bred deltakelse og innspill, og at ideene våre til syvende og sist bare vil lykkes dersom de etter hvert gjenspeiler sunn fornuft i et fellesskap som slutter opp om dem. Derfor håper vi at fellesskapet som hjelper oss å bygge denne boken, vil bidra med alt fra små endringer (som korrekturlesing) til store bidrag (som byggeklosser av tekst som hjelper oss å utdype et eksempel eller omformulere et prinsipp). Jo mer betydningsfullt bidraget er, desto større blir anerkjennelsen. Vi ønsker også å ta i bruk teknologiske fremskritt i alt vi gjør, og ser derfor gjerne at generative språkmodeller og andre digitale hjelpemidler brukes i arbeidet med bidrag.
 
-While there will be many types of contributions, arguably the focal and most common one will be editing of the root book.  This will happen through the standard git issue-fork-pull request-merge process which we will not discuss further here, as it is well documented in many places online.  As such, several central sources of credit and contribution will be related to this process and they are worth discussing in a bit greater detail here.
+Samtidig regner vi med at engasjementet vil bli langt større enn noen liten gruppe prosjektledere realistisk kan håndtere alene i et prosjekt som dette – særlig ettersom prosjektet har naturlige motstandere. Derfor blir redaksjons- og vedlikeholdsrollen minst like viktig å dele med fellesskapet som selve bidragsrollen. Vi planlegger å gjøre dette ved å be fellesskapet hjelpe til med å prioritere saker og endringsforslag, og å belønne treffsikker prioritering – altså prioriteringer som faktisk fører til at noe blir akseptert eller fulgt opp. De konkrete mekanismene for dette vil utvikle seg over tid, og vi kommer snart til å lenke til levende forklaringsdokumenter. Vi vil uansett alltid strebe etter kreative løsninger forankret i prinsippene fra boken – for eksempel ved å kombinere prediksjonsmarkeder med ulike former for plural stemmegivning (stemmegivningsmetoder som fanger opp mer enn bare et flertallsvalg).
 
-In writing this book, we aim to create a new vision for the future of technology that can help inspire a community to pursue and help create it.  We do not aim primarily at a statement of fact or consensus, though we hope to help surface facts and promote cooperation across difference.  As such, we will strive to mostly maintain a coherent argument and authorial voice, rather than combining together separate contributions from distinct authors.  However, we believe such a goal is consistent with a wide range of participation and input and that, ultimately, our ideas will only succeed if they eventually become a reflection of common sense of a community that pursues them.  As such we hope that the community helping us build this book will contribute a range of edits from the small (e.g. copyedits) to the large (e.g. building blocks of text that help us flesh out an application or restate a principle).  The more significant these contributions, the greater they will be recognized.  We also seek to embrace technological advancements in all our work and thus welcome the use of a range of digital assistive tools, such as generative foundation models, in creating contributions.
+# Styring og gradvis desentralisering
 
-At the same time, we expect there to be far more engagement than any small group of maintainers can realistically manage in any project on these terms, especially one as ours that has natural adversaries. Thus the editorial and maintenance role will be at least as important for us to share with the community as the contribution role.  We plan to do this by asking the community to help prioritize issues and PRs and to reward accurate prioritization, ones that end up being accepted/acted upon.  The precise mechanisms we will use for this will evolve over time and we will shortly link to live explanatory documents.  However, we will always endeavor to use creative approaches grounded in the principles described in the book, for example using a mixture of prediction markets and various forms of plural voting.
+Alle styringsfunksjoner vil bygge på både de kvalitative og kvantitative tokenene nevnt over. Styringen vil ta i bruk en rekke tilnærminger, fra formell avstemning til uformelle samtaler. Vi ønsker å bruke så mange som mulig av verktøyene vi beskriver i boken, slik at boken både viser og forteller sitt eget budskap. Styringen vil dekke hele bredden av spørsmål i prosjektets utvikling: utviklingen av alle repoer, beslutninger om den fysiske utgivelsesprosessen, og så videre. I starten vil fellesskapets innspill være rådgivende, og slik vil det forbli for endelige beslutninger helt frem til boken trykkes i fysisk form.
 
+Målet er likevel å ta i bruk Gov4Git for å overføre full og direkte kontroll til fellesskapet etter at første utgave av den fysiske boken er trykket. Selv om dette er milepælen for selve den formelle overgangen, håper vi prosessen frem dit blir gradvis: at vi over tid i stadig større grad lar fellesskapet styre hver beslutning, og at vår egen rolle mer og mer blir en formalitet. Vi planlegger å innføre flere styringselementer underveis for å støtte denne overgangen, for eksempel signaler fra fellesskapet om verdien av ulike bidrag, som vi deretter kan godkjenne. For et inntrykk av hva slags styringsstrukturer vi ønsker å bruke, kan du besøke RadicalxChange sine nettsider (http://www.radicalxchange.org). Vi vil lenke til mer informasjon her etter hvert som vi får en klarere plan for nøyaktig hvordan disse elementene skal brukes.
 
+# Økonomiske mål
 
+Vi har ingen ambisjon om økonomisk avkastning fra noen del av prosjektet, og bruker faktisk noe av våre egne midler for å gjøre det mulig. Enkelte deler av prosjektet kan likevel trenge økonomisk støtte (for eksempel markedsføring og distribusjon av den fysiske boken), og mange av de frivillige i fellesskapet vil kanskje mene det er rimelig å få kompensasjon for noe av tiden de legger ned. Vi er forpliktet til å legge alt grunnleggende materiale i det fri, og det er et kjerneprinsipp for prosjektet å unngå at det blir finansialisert eller spekulativt. Samtidig tror vi det finnes måter å hente inn midler på, der det er relevant, som ikke bare er forenlige med verdiene våre, men som også illustrerer dem. Vi ønsker innspill fra fellesskapet om dette; noen foreløpige tanker fra oss er:
+1. NFT-er (non-fungible tokens) som følger med fysiske bokeksemplarer, og som gjør at boken kan selges med prispåslag til tross for manglende opphavsrett.
+2. Innsamling av midler gjennom kvadratisk finansiering (Quadratic Funding) på plattformer som GitCoin.
+3. Bruk av delt eierskap/Harberger-tokens (en eiendomsmodell der eieren selv setter prisen, men også må betale skatt av den og akseptere ethvert bud) for å regulere tilgang til knappe, tilknyttede ressurser (som Glens tid til konsulentarbeid og foredrag).
+4. Utstedelse av kompetansebevis og SoulBound Tokens (ikke-overførbare tokens knyttet til én bruker) til både direkte økonomiske bidragsytere og de som finansierer prosjektet gjennom GitCoin.
 
-# Governance and progressive decentralization
+Vi planlegger å forfølge disse tilnærmingene og å legge eventuelle innsamlede midler under fellesskapets kollektive kontroll, etter at nødvendige utgifter til trykking og distribusjon av den fysiske boken er dekket. Vi er klar over at dette krever egnede juridiske grep for å sikre at vi følger organisasjonsformer og regelverk i relevante jurisdiksjoner, og vi planlegger å ta disse stegene i løpet av de kommende månedene, eventuelt med hjelp fra Open Collective Foundation.
 
-All governance functions will harness both the qualitative and quantitative tokens discussed above.  Governance will harness a range of approaches, from formal voting to informal discussions.  We will aim to harness as many of the tools we describe in the book as possible, to show as well as tell the book's message.  Governance will address the full range of issues in the project's development: the evolution of all repositories, decisions about the physical publication process, etc.  Initially, community input will be advisory and this will remain the case in final decisions until the book is physically printed.  
+# Offisielle oversettelsesrepoer
 
-However, we aim to harness Gov4Git to turn the process over to full and direct community control after the printing of the first edition of the physical books.  While this milestone marks a point at which we aim to make the formal transition, we hope for this process to be gradual: we hope that over time we rely more and more on the community to guide every decision and that our oversight becomes more of a formalism.  We plan to incorporate additional governance elements to aid this transition over time, such as signals from the community of the value of various contributions which we can then approve.  To get a sense of the kinds of governance structures we hope to employ, please visit the RadicalxChange website (http://www.radicalxchange.org).  We will include more details linked here as we have a clearer sense of precisely how we will use these elements.
+Vi oppfordrer ulike fellesskap til å hjelpe oss med å oversette innholdet til flere språk, slik at boken blir tilgjengelig for flere rundt om i verden. Alle står fritt til å forke repoet for å sette i gang eget oversettelsesarbeid. Målet vårt er å la fellesskap bidra på en skalerbar og desentralisert måte, samtidig som vi gir offisiell status etter godkjenning.
 
-# Financial goals
+Her er en [enkel oppstartsguide](https://docs.plurality.net/contributing/Contributing%20translations/). Bli gjerne med i [Discord](https://discord.gg/YWSDRqdW5n) for å koordinere med teamet om å få forket ditt godkjent og listet her, få oversettelsesarbeidet ditt vist på nettsiden, og for å gi tilbakemeldinger på hvordan vi kan forbedre prosessen!
 
-We have no aspiration to earn any financial return on any aspect of the project, and in fact are spending some personal resources to make it possible.  However, there are elements of the project that may require financial support (e.g. promotion and distribution of the physical book) and many of the volunteers in the community may decide it is appropriate they be compensated for some part of the time they devote to the work.  We are committed to putting all base materials into the public domain and it is core to this project to avoid it becoming financialized or speculative.  At the same time,  we believe that there are ways that are not only consistent with our values but illustrative of them to help raise funds to the extent they become relevant.  We welcome ideas from the community on this; some preliminary thoughts of ours include:
-1. Non-fungible tokens (NFTs) that are issued along with physical copies of the book and allow the book to sell at a premium despite the lack of copyright.
-2. Raising funds through a Quadratic Funding grant on platforms such as GitCoin.
-3. Using partial common ownership/Harberger tokens to gate access to scarce associated resources (like Glen's consulting and speaking time).
-4. Issuing credentials and SoulBound Tokens to both direct financial contributors and those who fund the project through GitCoin.
+_Merk: Tradisjonell kinesisk og engelsk regnes begge som rotspråk og er vertskapet for i dette repoet, mens hver forgrening (fork) forvaltes av individuelle medlemmer av fellesskapet._
 
-We plan to pursue these approaches and to put any funds raised into the collective control of the community, after any necessary expenditures to ensure physical printing and distribution of the book are completed.  We understand this will require appropriate legal steps to ensure compliance with organizational forms and standard in relevant jurisdictions and we plan to undertake these in the coming months, possibly with the assistance of the Open Collective Foundation.
+Aktive oversettelsesmiljøer og -repoer
 
-# Official Translation Repositories
+- Ukrainsk: https://github.com/vlree-alt/plurality-ukrainian
+- Japansk: https://github.com/nishio/plurality-japanese
+- Tysk: https://github.com/GermanPluralityBook/pluralitaet
+- Koreansk: https://github.com/park-haewon/plurality-korean
+- Fransk: https://github.com/xitobal/radicalxchangeparis.github.io/tree/main/public/Plurality%2C%20le%20livre%20-%20G%20Weil
+- Norsk: https://github.com/NorwegianPlurality/Pluralitet-Bok
 
-We encourage different communities to help us translate the content in various languages for more accessibility around the world, anyone should feel free to fork the repository to initiate their translation work. We aim to allow communities to contribute in scalable and decentralized ways while granting official status upon approval.
+# Oppsummering og veien videre
 
-Here's a [simple onboarding guide](https://docs.plurality.net/contributing/Contributing%20translations/). Please feel free to join the [Discord](https://discord.gg/YWSDRqdW5n) to coordinate with the team on getting your fork approved and listed here, your translation work reflected on the website, and join our contributor community to give any feedback on how to improve the process!
-
-_Note: Traditional Mandarin and English are both considered root languages and are hosted in this repository, while each fork is maintained by individual community members._
-
-Active translation communities and repositories
-
-- Ukrainian: https://github.com/vlree-alt/plurality-ukrainian
-- Japanese: https://github.com/nishio/plurality-japanese
-- German: https://github.com/GermanPluralityBook/pluralitaet 
-- Korean: https://github.com/park-haewon/plurality-korean
-- French: https://github.com/xitobal/radicalxchangeparis.github.io/tree/main/public/Plurality%2C%20le%20livre%20-%20G%20Weil
-
-# Summary and next steps
-
-We look forward to collaborating with all of you on this exciting project.  Please reach out to glen@plurality.net if you have any questions that you cannot convey through our collaboration channels.
-
+Vi ser frem til å samarbeide med dere alle om dette spennende prosjektet. Ta gjerne kontakt på glen@plurality.net hvis du har spørsmål du ikke får svar på gjennom våre vanlige samarbeidskanaler.
