@@ -4,6 +4,7 @@ import {
   OVERLAY_DIR,
   parseTree,
   publicationTree,
+  snapshotParents,
   type TreeEntry,
 } from '../scripts/translation/rebuild-simplify'
 
@@ -96,5 +97,34 @@ describe('tree parsing', () => {
     // still pass every other test here and corrupt exactly those entries.
     const out = parseTree(`100644 blob ${'0'.repeat(40)}\tcontents/english/a b.md\x00`)
     expect(paths(out)).toEqual(['contents/english/a b.md'])
+  })
+})
+
+describe('snapshot parents', () => {
+  const N1 = 'n1', N2 = 'n2', S1 = 's1'
+
+  it('hangs the first snapshot off the source tip alone', () => {
+    // simplify starts out an ancestor of norwegian, so nothing else is needed to make
+    // the move a fast-forward.
+    expect(snapshotParents(N1, S1, true)).toEqual([N1])
+  })
+
+  it('takes the source tip alone when the branch does not exist yet', () => {
+    expect(snapshotParents(N1)).toEqual([N1])
+  })
+
+  it('carries the previous snapshot once it is no longer an ancestor of the source', () => {
+    // The second refresh, and the bug this exists to prevent: S1 hangs off N1 and the new
+    // snapshot off N2, beside it rather than after it. Without S1 as a parent the move
+    // rewrites history in every clone.
+    expect(snapshotParents(N2, S1, false)).toEqual([S1, N2])
+  })
+
+  it('puts the previous snapshot first, so first-parent history is the snapshot chain', () => {
+    expect(snapshotParents(N2, S1, false)[0]).toBe(S1)
+  })
+
+  it('does not list the same commit twice when the source has not moved', () => {
+    expect(snapshotParents(N1, N1, false)).toEqual([N1])
   })
 })

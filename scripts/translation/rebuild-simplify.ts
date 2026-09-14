@@ -7,12 +7,12 @@ import { spawnSync } from 'node:child_process'
  * simplified-English layers plus the tooling, and not the Norwegian translation. Three
  * properties are worth keeping, and they are what this script exists to guarantee.
  *
- * It rebuilds rather than merges. `simplify` is an ancestor of `norwegian`, so a commit
- * built on top of `norwegian` is a descendant of `simplify` and moving the branch is a
- * fast-forward — no force-push, no rewritten history for anyone who has cloned it. A
- * merge would instead drag contents/norwegian/ in, and deleting it again on each refresh
- * produces a delete-versus-modify conflict against every later merge, growing with each
- * translated chapter.
+ * It rebuilds rather than merges. A real merge would drag contents/norwegian/ in, and
+ * deleting it again on each refresh produces a delete-versus-modify conflict against every
+ * later merge, growing with each translated chapter. Here the tree is computed outright,
+ * so the merge that would have conflicted never happens — while the snapshot still carries
+ * the previous one as a parent, which is what keeps every move a fast-forward. See
+ * snapshotParents.
  *
  * It runs entirely in git plumbing, against a temporary index. Nothing is checked out,
  * no branch is switched, and the working tree is never touched, so it is safe to run from
@@ -85,6 +85,33 @@ export function publicationTree(entries: TreeEntry[]): TreeEntry[] {
   return [...byPath.values()].sort((a, b) => a.path.localeCompare(b.path))
 }
 
+/**
+ * Parents for the snapshot commit, first parent first.
+ *
+ * The first rebuild can hang the snapshot off the source tip alone: `simplify` starts out
+ * an ancestor of `norwegian`, so a commit built on the source tip is already a descendant
+ * of it and moving the branch is a fast-forward. No later rebuild has that property, and
+ * assuming it does is the trap here. Snapshot N+1 is built on the current source tip;
+ * snapshot N hangs off an older source tip *beside* it. Neither is an ancestor of the
+ * other, so the second refresh would rewrite history for anyone who had cloned the branch.
+ *
+ * Carrying the previous snapshot as the first parent settles it for good: the branch's
+ * first-parent history becomes the chain of snapshots, the source commit records what each
+ * was built from, and every move stays a fast-forward however many times this is run.
+ *
+ * A commit someone made on the branch by hand is kept in the history for the same reason,
+ * even though its content is discarded — the tree is computed from the source, never
+ * merged from the parents.
+ */
+export function snapshotParents(
+  source: string,
+  previous?: string,
+  previousIsAncestorOfSource = false,
+): string[] {
+  if (!previous || previous === source || previousIsAncestorOfSource) return [source]
+  return [previous, source]
+}
+
 export interface RebuildResult {
   commit: string
   source: string
@@ -128,6 +155,13 @@ export function rebuildSimplify(
   })
   const treeOid = withIndex(['write-tree']).trim()
 
+  const head = spawnSync('git', ['rev-parse', '--verify', `${target}^{commit}`], { encoding: 'utf8' })
+  const previous = head.status === 0 ? head.stdout.trim() : undefined
+  const contained =
+    previous !== undefined &&
+    spawnSync('git', ['merge-base', '--is-ancestor', previous, sourceOid]).status === 0
+  const parents = snapshotParents(sourceOid, previous, contained)
+
   const replaced = overlay.map((e) => e.path.slice(OVERLAY_DIR.length + 1)).sort()
   const message = [
     `Rebuild the simplified-English edition from ${source}`,
@@ -139,18 +173,22 @@ export function rebuildSimplify(
     'the next rebuild discards it. Work happens on ' + source + '.',
   ].join('\n')
 
-  const commit = git(['commit-tree', treeOid, '-p', sourceOid, '-m', message]).trim()
+  const commit = git([
+    'commit-tree',
+    treeOid,
+    ...parents.flatMap((p) => ['-p', p]),
+    '-m',
+    message,
+  ]).trim()
 
-  // Refuse anything that is not a fast-forward, so a clone of the branch never has to
-  // reconcile rewritten history. This is the property the whole rebuild approach buys.
-  const exists = spawnSync('git', ['rev-parse', '--verify', `${target}^{commit}`], { encoding: 'utf8' })
-  if (exists.status === 0) {
-    const previous = exists.stdout.trim()
+  // Belt and braces. snapshotParents is what makes the move a fast-forward; this checks
+  // that it did, because the cost of being wrong is rewritten history in every clone.
+  if (previous !== undefined) {
     const ff = spawnSync('git', ['merge-base', '--is-ancestor', previous, commit])
     if (ff.status !== 0) {
       throw new Error(
         `refusing to move ${target}: ${previous.slice(0, 7)} is not an ancestor of the rebuilt ` +
-          `${commit.slice(0, 7)}. ${target} has commits of its own, which it must not have.`,
+          `${commit.slice(0, 7)}, so the move would rewrite history in every clone.`,
       )
     }
   }

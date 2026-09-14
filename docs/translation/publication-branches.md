@@ -40,13 +40,35 @@ Push it with `git push origin simplify`.
 
 ### Why rebuild and not merge
 
-`simplify` is an **ancestor** of `norwegian`, so a commit built on top of `norwegian` is a
-descendant of `simplify`. Moving the branch is therefore a fast-forward — no force-push,
-and no rewritten history for anyone who has cloned it.
+A merge drags `contents/norwegian/` along. Deleting it again on every refresh produces a
+delete-versus-modify conflict against each subsequent merge, and the conflict grows with
+every translated chapter. Here the tree is computed outright, so the merge that would have
+conflicted never happens.
 
-A merge would instead drag `contents/norwegian/` along. Deleting it again on every refresh
-produces a delete-versus-modify conflict against each subsequent merge, and the conflict
-grows with every translated chapter. Rebuilding avoids the problem rather than managing it.
+### Why every move is a fast-forward
+
+The snapshot carries the previous snapshot as its **first parent**, and the source commit
+as its second. That is what keeps `git push origin simplify` a fast-forward — no
+force-push, and no rewritten history for anyone who has cloned the branch.
+
+It is worth being precise about why the obvious shortcut fails, because it looks correct
+and breaks on the second use. `simplify` *starts out* an ancestor of `norwegian`, so the
+first snapshot can hang off the source tip alone and still be a descendant of the branch it
+replaces. No later refresh has that property:
+
+    N1 ── N2 ── N3          norwegian
+     ╲     ╲
+      S1    S2              snapshots, if each hangs off the source tip alone
+
+`S2` is built on `N2`; `S1` hangs off `N1` *beside* it. Neither is an ancestor of the
+other, so moving `simplify` from `S1` to `S2` rewrites history. Carrying `S1` as `S2`'s
+first parent makes the chain linear in first-parent order — `git log --first-parent
+simplify` is the list of snapshots — while the second parent records what each was built
+from. The content never comes from either parent; the tree is computed from the source.
+
+The rebuild checks the result anyway and refuses to move the branch if the move is not a
+fast-forward. If it ever fires, something is wrong with the assumption above, not with the
+branch.
 
 ## The overlay
 
