@@ -6,7 +6,7 @@ Turn a chapter of `contents/english/` into English written for this edition's re
 ## Who you are writing for
 
 Read [`audience.md`](audience.md) once, and your chapter's note under
-[`audience/`](audience/) before you start. The short version: a 45-year-old with a master's
+`audience/` before you start. The short version: a 45-year-old with a master's
 degree in a social science, fluent in institutions and powerless with notation. No maths
 since upper secondary, no code ever, no proofs. She reads to use what she reads, and she
 can tell when she is being talked down to — it is her profession to tell.

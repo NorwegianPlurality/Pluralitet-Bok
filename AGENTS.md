@@ -184,6 +184,13 @@ same rules either way.
 default branch and where all work lands. Per-chapter branches start from `norwegian` and
 merge back into it — including stage 1 work, which does *not* go to the `simplify` branch.
 
+`simplify` is a generated snapshot of the simplified-English edition: `norwegian` without
+`contents/norwegian/`, rebuilt by `vp run translation:rebuild-simplify` and never committed
+to by hand. That edition's own front page and agent instructions live here, on this branch,
+under `publication/simplified-english/`; the rebuild lifts them to the root in place of the
+Norwegian `ReadMe.md` and this file. Edit them there — a fix made on `simplify` is discarded
+by the next rebuild.
+
 ## Reference
 
 - `docs/translation/simplify.md` — stage 1 in detail
@@ -191,7 +198,7 @@ merge back into it — including stage 1 work, which does *not* go to the `simpl
 - `docs/translation/review.md` — what a reviewer checks
 - `docs/translation/audience.md` — who this edition is for, and the register that follows
 - `docs/translation/audience/` — one note per chapter, same filename as the chapter
-- `docs/translation/publication-branches.md` — design note for a future simplified-English
-  edition branch; not set up yet
+- `docs/translation/publication-branches.md` — how the `simplify` branch is generated
+- `publication/simplified-english/` — root files the rebuild puts on that branch
 - `translation/glossary.tsv` — term decisions
 - `translation/chapter-titles.tsv` — chapter ids and Norwegian titles

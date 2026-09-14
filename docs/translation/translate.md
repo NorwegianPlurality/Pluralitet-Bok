@@ -13,7 +13,7 @@ terms to `translation/proposals/3-2.tsv`.
 ## Before you start
 
 Read [`audience.md`](audience.md) once, and your chapter's note under
-[`audience/`](audience/). The reader is the same one stage 1 wrote for — the same
+`audience/`. The reader is the same one stage 1 wrote for — the same
 demographic, now in her own country. Stage 1 adapted the text to her education and her
 vocabulary; this stage adapts it to her language, and explains the terms that have no
 Norwegian equivalent at all. Rules R2, R3, R5, R6, R8 and R9 are the ones that bite here.

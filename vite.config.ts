@@ -16,6 +16,7 @@ export default defineConfig({
       'translation:validate': { command: 'bun scripts/book/validate-translation.ts' },
       'translation:progress': { command: 'bun scripts/translation/refresh-progress.ts' },
       'translation:next': { command: 'bun scripts/translation/next-tasks.ts' },
+      'translation:rebuild-simplify': { command: 'bun scripts/translation/rebuild-simplify.ts' },
       'book:assemble': { command: 'bun scripts/book/build.ts all dist/publication' },
       'book:manifest': { command: 'bun scripts/book/manifest.ts dist/publication' },
       'book:candidate:prepare': { command: 'bun scripts/book/prepare-vivliostyle.ts' },
