@@ -3,12 +3,12 @@ name: CI & Book Publication
 on:
   push:
     branches:
-      # main mirrors upstream; norwegian is this fork's default and where work lands.
-      # The publication jobs below stay gated on main plus the upstream owner, so
-      # adding norwegian here runs verification and builds only.
+      # main mirrors upstream. simplify and norwegian are this fork's working branches,
+      # one per edition. The publication jobs below stay gated on main plus the upstream
+      # owner, so adding them here runs verification and builds only.
       - main
-      - norwegian
       - simplify
+      - norwegian
   pull_request:
   workflow_dispatch:
 
@@ -37,6 +37,64 @@ jobs:
         run: vp install --frozen-lockfile
       - name: Verify
         run: vp run check
+
+  # One job per fork edition, so each is verified and assembled on its own and reports its
+  # own status. A human editor signs off on an edition before it is published, and needs a
+  # green tick that means *that* edition rather than the worse of the two. fail-fast is off
+  # for the same reason: the Norwegian failing must not hide the simplified English passing.
+  #
+  # Each edition is skipped where its source layer is absent, so this same job runs on both
+  # working branches — simplify carries only the simplified English, norwegian carries both.
+  edition:
+    runs-on: ubuntu-latest
+    needs: verify
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - edition: en-simple
+            layer: contents/simplified-english
+          - edition: nb
+            layer: contents/norwegian
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@250f29ce396baf5e8f24498e17c0dfdebabc26eb
+        with:
+          node-version: '24'
+          cache: true
+          run-install: false
+
+      - name: Check for this edition
+        id: layer
+        run: |
+          if [ -d "${{ matrix.layer }}" ]; then
+            echo "present=true" >> $GITHUB_OUTPUT
+          else
+            echo "present=false" >> $GITHUB_OUTPUT
+            echo "::notice::${{ matrix.layer }} is not on this branch; skipping the ${{ matrix.edition }} edition."
+          fi
+
+      - name: Install dependencies (frozen)
+        if: steps.layer.outputs.present == 'true'
+        run: vp install --frozen-lockfile
+
+      - name: Derive Variables
+        if: steps.layer.outputs.present == 'true'
+        run: echo "BOOK_DATE=$(git log -1 --format=%cs)" >> $GITHUB_ENV
+
+      - name: Verify and assemble the edition
+        if: steps.layer.outputs.present == 'true'
+        run: vp run edition:check:${{ matrix.edition }}
+
+      - name: Upload the assembled edition
+        if: steps.layer.outputs.present == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: edition-${{ matrix.edition }}
+          path: dist/publication/${{ matrix.edition }}
 
   docs:
     runs-on: ubuntu-latest

@@ -311,13 +311,22 @@ function checkTermSurvival(chapter: string, src: string, out: string, glossary: 
   return issues
 }
 
-export function validateTranslation(root: string): Issue[] {
+/**
+ * Checks one stage, or both.
+ *
+ * Each edition is signed off separately — an editor reviews the simplified English before
+ * it is published, and a different one reviews the Norwegian — so each has to be checkable
+ * on its own. Passing a stage narrows the run to the edition that stage produces, and its
+ * exit code then speaks for that edition alone rather than for whichever is in worse shape.
+ */
+export function validateTranslation(root: string, only?: Stage): Issue[] {
   const issues: Issue[] = []
   const titles = readChapterTitles(root)
   const glossary = readGlossary(root)
   const known = new Set(titles.map((t) => t.file))
+  const stages: Stage[] = only ? [only] : ['simplify', 'translate']
 
-  for (const stage of ['simplify', 'translate'] as Stage[]) {
+  for (const stage of stages) {
     const { from, to } = STAGE_LAYERS[stage]
 
     for (const file of chapterFiles(root, to)) {
@@ -373,7 +382,10 @@ export function validateTranslation(root: string): Issue[] {
     }
   }
 
-  const missingTitle = titles.filter((t) => !t.noTitle)
+  // A missing Norwegian title only breaks the translate stage, which is what reads it to
+  // check cross-chapter link text. Reporting it against the simplified English would fail
+  // that edition's build for a defect it has no way to cause and no business fixing.
+  const missingTitle = stages.includes('translate') ? titles.filter((t) => !t.noTitle) : []
   for (const t of missingTitle) {
     issues.push({
       level: 'error',
@@ -398,8 +410,13 @@ export function formatIssues(issues: Issue[]): string {
 }
 
 if (import.meta.main) {
-  const root = process.argv[2] ?? process.cwd()
-  const issues = validateTranslation(root)
+  const args = process.argv.slice(2)
+  const stageArg = args.find((a) => a.startsWith('--stage='))?.slice('--stage='.length)
+  if (stageArg && stageArg !== 'simplify' && stageArg !== 'translate') {
+    throw new Error(`Usage: bun scripts/book/validate-translation.ts [ROOT] [--stage=simplify|translate]`)
+  }
+  const root = args.find((a) => !a.startsWith('--')) ?? process.cwd()
+  const issues = validateTranslation(root, stageArg as Stage | undefined)
   console.log(formatIssues(issues))
   if (issues.some((i) => i.level === 'error')) process.exit(1)
 }

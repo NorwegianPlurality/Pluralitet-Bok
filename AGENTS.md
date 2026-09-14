@@ -32,8 +32,8 @@ chapter in each folder. Norwegian titles live in the chapter's `#` heading and i
 
 The book is worked in parallel. Every job is a single chapter at a single stage:
 
-    simplify/3-2     edits only  contents/simplified-english/3-2-connected-society.md
-    translate/3-2    edits only  contents/norwegian/3-2-connected-society.md
+    simplify/3-2     from simplify    edits only  contents/simplified-english/3-2-connected-society.md
+    translate/3-2    from norwegian   edits only  contents/norwegian/3-2-connected-society.md
 
 To see everything that can be started right now:
 
@@ -64,8 +64,12 @@ Norwegian chapter titles and settled terminology — are already resolved up fro
 Run the checker before opening a pull request:
 
 ```bash
-vp run translation:validate
+vp run edition:check:en-simple   # stage 1: validates and assembles the simplified English
+vp run edition:check:nb          # stage 2: the same for the Norwegian
 ```
+
+Each edition is verified and built on its own, because each is reviewed and published on
+its own. `vp run translation:validate` still checks both stages at once.
 
 - **Every footnote marker in the source appears in the output.** `[^Deming]` in the English
   must survive into the simplified English and into the Norwegian. Footnote *definitions*
@@ -180,16 +184,25 @@ same rules either way.
 
 ## Branches
 
-`main` mirrors `upstream/main` exactly and never takes a fork commit. `norwegian` is the
-default branch and where all work lands. Per-chapter branches start from `norwegian` and
-merge back into it — including stage 1 work, which does *not* go to the `simplify` branch.
+`main` mirrors `upstream/main` exactly and never takes a fork commit.
 
-`simplify` is a generated snapshot of the simplified-English edition: `norwegian` without
-`contents/norwegian/`, rebuilt by `vp run translation:rebuild-simplify` and never committed
-to by hand. That edition's own front page and agent instructions live here, on this branch,
-under `publication/simplified-english/`; the rebuild lifts them to the root in place of the
-Norwegian `ReadMe.md` and this file. Edit them there — a fix made on `simplify` is discarded
-by the next rebuild.
+The two editions have a working branch each, and both are real branches that people commit
+to. `simplify` carries the simplified English; `norwegian` carries that plus the
+translation. A chapter branch is cut from the branch that owns its stage:
+
+    simplify/3-2     from simplify    stage 1
+    translate/3-2    from norwegian   stage 2
+
+Work flows one way, `simplify` into `norwegian`, and never back. So **a change to anything
+both editions share — tooling, tests, registries, CI, these instructions, the audience
+profile — belongs on `simplify`**, or on a branch cut from it. Made on `norwegian`, it is
+stranded there.
+
+Run `vp run setup:git` once per clone. `ReadMe.md` and `AGENTS.md` differ per edition on
+purpose and are marked `merge=ours` so they stop conflicting on every merge, and git only
+honours that once the driver is enabled.
+
+`docs/translation/editions.md` has the whole picture.
 
 ## Reference
 
@@ -198,7 +211,6 @@ by the next rebuild.
 - `docs/translation/review.md` — what a reviewer checks
 - `docs/translation/audience.md` — who this edition is for, and the register that follows
 - `docs/translation/audience/` — one note per chapter, same filename as the chapter
-- `docs/translation/publication-branches.md` — how the `simplify` branch is generated
-- `publication/simplified-english/` — root files the rebuild puts on that branch
+- `docs/translation/editions.md` — the two editions, their branches, and how each is built
 - `translation/glossary.tsv` — term decisions
 - `translation/chapter-titles.tsv` — chapter ids and Norwegian titles

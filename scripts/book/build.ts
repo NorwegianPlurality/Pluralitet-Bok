@@ -1,8 +1,28 @@
-import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { join, basename } from 'node:path'
 import { writeManifest } from './manifest'
 
-export type Locale = 'en' | 'zh-TW'
+/**
+ * The editions this repository can assemble.
+ *
+ * `en` and `zh-TW` come from upstream and are complete. `en-simple` and `nb` are this
+ * fork's, and are partial — a chapter appears in them as it is simplified or translated.
+ * Each is assembled and verified on its own, because each is signed off on its own: an
+ * editor reviews an edition before it is published, and cannot do that against a build
+ * that only succeeds when every edition is finished.
+ */
+export type Locale = 'en' | 'zh-TW' | 'en-simple' | 'nb'
+
+/** Upstream's editions, which `all` builds and the release pipeline publishes. */
+export const UPSTREAM_EDITIONS: Locale[] = ['en', 'zh-TW']
+
+/** This fork's editions, built and verified separately from upstream's. */
+export const FORK_EDITIONS: Locale[] = ['en-simple', 'nb']
+
+export const EDITIONS: Locale[] = [...UPSTREAM_EDITIONS, ...FORK_EDITIONS]
+
+export const isEdition = (value: string): value is Locale => (EDITIONS as string[]).includes(value)
+
 type CreditContributor = { name: string; pt: number }
 type CreditCategory = { name: string; contributors: CreditContributor[] }
 type Credits = { categories: CreditCategory[]; i18n?: Record<string, { categories?: Record<string, string> }> }
@@ -13,19 +33,54 @@ type LocaleConfig = {
   sections: Record<number, string>
   labels: 'en' | 'zh'
   endorsement: 'en' | 'zh'
+  endorsementFile: string
   footnoteSeparator: string
+  /**
+   * True for an edition assembled while it is still being written, where a chapter joins
+   * as it is simplified or translated. Upstream's editions are complete, and for them a
+   * missing front-matter file is a broken checkout rather than work not yet done — so it
+   * stays an error there, and publishing an upstream book minus its endorsements stays
+   * impossible.
+   */
+  partial?: boolean
+  /**
+   * Credit category names for editions whose language is not in scripts/credits.json.
+   * That file is upstream's; a fork edition overrides the labels here rather than adding
+   * a key to it and creating a conflict on every sync.
+   */
+  categoryLabels?: Record<string, string>
 }
 
 const configs: Record<Locale, LocaleConfig> = {
   en: {
-    directory: 'english', filePrefix: 'Plurality-english', labels: 'en', endorsement: 'en', footnoteSeparator: '-',
+    directory: 'english', filePrefix: 'Plurality-english', labels: 'en', endorsement: 'en', endorsementFile: '0-0-endorsements.md', footnoteSeparator: '-',
     metadata: 'title: Plurality\nsubtitle: "The Future of Collaborative Technology and Democracy"\nauthor: "E. Glen Weyl, Audrey Tang and ⿻ Community"\nlang: en\ncover-image: scripts/cover-image.png \nmainfont: "Noto Serif"\nlinestretch: 1.25',
     sections: { 1: 'Section 1: Preface', 2: 'Section 2: Introduction', 3: 'Section 3: Plurality', 4: 'Section 4: Freedom', 5: 'Section 5: Democracy', 6: 'Section 6: Impact', 7: 'Section 7: Forward', 0: 'Endorsements' },
   },
   'zh-TW': {
-    directory: 'traditional-mandarin', filePrefix: 'Plurality-traditional-mandarin', labels: 'zh', endorsement: 'zh', footnoteSeparator: '_',
+    directory: 'traditional-mandarin', filePrefix: 'Plurality-traditional-mandarin', labels: 'zh', endorsement: 'zh', endorsementFile: '0-0-名家推薦.md', footnoteSeparator: '_',
     metadata: 'title: 多元宇宙\nsubtitle: 協作技術與民主的未來\nauthor: 衛谷倫、唐鳳、⿻社群\nlang: zh-TW\ncover-image: scripts/cover-image.zh-tw.png \nlinestretch: 1.25',
     sections: { 1: '一、序章', 2: '二、導論', 3: '三、多元', 4: '四、自由', 5: '五、民主', 6: '六、影響', 7: '七、前行', 0: '名家推薦' },
+  },
+  // Same language as `en`, so it shares the credit labels and the footnote separator, and
+  // differs only in which directory it reads. The title stays the original's: this is the
+  // same book in plainer English, not a different one.
+  'en-simple': {
+    directory: 'simplified-english', filePrefix: 'Plurality-simplified-english', labels: 'en', endorsement: 'en', endorsementFile: '0-0-endorsements.md', footnoteSeparator: '-', partial: true,
+    metadata: 'title: Plurality\nsubtitle: "The Future of Collaborative Technology and Democracy"\nauthor: "E. Glen Weyl, Audrey Tang and ⿻ Community"\nlang: en\ncover-image: scripts/cover-image.png \nmainfont: "Noto Serif"\nlinestretch: 1.25',
+    sections: { 1: 'Section 1: Preface', 2: 'Section 2: Introduction', 3: 'Section 3: Plurality', 4: 'Section 4: Freedom', 5: 'Section 5: Democracy', 6: 'Section 6: Impact', 7: 'Section 7: Forward', 0: 'Endorsements' },
+  },
+  // Section names and the endorsements heading follow translation/chapter-titles.tsv, so
+  // the assembled book and the registry cannot drift apart.
+  nb: {
+    directory: 'norwegian', filePrefix: 'Plurality-norwegian', labels: 'en', endorsement: 'en', endorsementFile: '0-0-endorsements.md', footnoteSeparator: '-', partial: true,
+    metadata: 'title: Pluralitet\nsubtitle: "Fremtiden for samarbeidsteknologi og demokrati"\nauthor: "E. Glen Weyl, Audrey Tang og ⿻-fellesskapet"\nlang: nb\ncover-image: scripts/cover-image.png \nmainfont: "Noto Serif"\nlinestretch: 1.25',
+    sections: { 1: 'Del 1: Forord', 2: 'Del 2: Innledning', 3: 'Del 3: Pluralitet', 4: 'Del 4: Frihet', 5: 'Del 5: Demokrati', 6: 'Del 6: Virkning', 7: 'Del 7: Veien videre', 0: 'Anbefalinger' },
+    categoryLabels: {
+      Writing: 'Skriving', Editing: 'Redigering', Technical: 'Teknisk', Translation: 'Oversettelse',
+      Visuals: 'Visuelt', Data: 'Data', Management: 'Prosjektledelse',
+      'Public relations': 'Kommunikasjon', Research: 'Research',
+    },
   },
 }
 
@@ -83,8 +138,9 @@ export function assembleLocale(root: string, locale: Locale, bookDate: string, c
   if (!/^\d{4}-\d{2}-\d{2}$/.test(bookDate)) throw new Error(`Invalid BOOK_DATE: ${bookDate}`)
   const config = configs[locale]
   const credits = validateCredits(creditsValue, locale)
-  const labels = credits.i18n?.[config.labels]?.categories ?? {}
+  const labels = { ...(credits.i18n?.[config.labels]?.categories ?? {}), ...(config.categoryLabels ?? {}) }
   const source = join(root, 'contents', config.directory)
+  if (!existsSync(source)) throw new Error(`Edition ${locale} has no contents/${config.directory}/`)
   let all = `---\n${config.metadata.replace('\nlang:', `\ndate: "${bookDate}"\nlang:`)}\n---\n`
   for (const name of (readdirSync(source) as string[]).filter((name: string) => /^0-[13]-.*\.md$/.test(name)).sort()) all += `${readUtf8(join(source, name)).replace(/^#+\s+(.+)/, '\n**$1**')}\n\n`
   let tex = '\n```{=latex}\n\\interfootnotelinepenalty=10000\n\\begin{center}\n\n'
@@ -97,8 +153,14 @@ export function assembleLocale(root: string, locale: Locale, bookDate: string, c
     category.contributors.forEach((contributor) => { html += `<p style="font-size: ${contributor.pt}pt; margin: 2pt 0">${contributor.name}</p>\n` })
   })
   all += tex + '\n\\end{center}\n```\n' + html + '</div>\n```\n\n'
-  const endorsement = join(source, locale === 'zh-TW' ? '0-0-名家推薦.md' : '0-0-endorsements.md')
-  const files = [endorsement, ...(readdirSync(source) as string[]).filter((name: string) => /^[1234567].*\.md$/.test(name)).sort().map((name: string) => join(source, name))]
+  // A partial edition is assembled while it is still being written, so its front matter is
+  // optional — otherwise no edition could be built, and no editor could review one, until
+  // its last chapter landed. A complete edition keeps the old guarantee.
+  const endorsement = join(source, config.endorsementFile)
+  if (!existsSync(endorsement) && !config.partial) {
+    throw new Error(`Edition ${locale} is missing contents/${config.directory}/${config.endorsementFile}`)
+  }
+  const files = [...(existsSync(endorsement) ? [endorsement] : []), ...(readdirSync(source) as string[]).filter((name: string) => /^[1234567].*\.md$/.test(name)).sort().map((name: string) => join(source, name))]
   const remaining = { ...config.sections }
   for (const file of files) { const number = numberedPart(file); if (remaining[number]) { all += `# ${remaining[number]}\n\n`; delete remaining[number] }; const rawBase = basename(file).replace(/^([-\d]+)-.*/, '$1'); const footnoteBase = config.footnoteSeparator === '_' ? `${rawBase.replaceAll('-', '_')}_` : rawBase; all += `${transformChapter(file, rawBase, footnoteBase, config, number === 0)}\n\n` }
   const preTex = (readdirSync(source) as string[]).filter((name: string) => /^0-2-.*\.md$/.test(name)).sort().map((name: string) => readUtf8(join(source, name)).replace(/\*\*(.*?)\*\*/g, '\\textbf{$1}').replace(/^#+\s+(.+)/gm, '\\textbf{$1}').replace(/&/g, '\\&').replace(/\[(.*?)\]\((.*?)\)/g, '\\href{$2}{$1}').replace(/ \*(.*?)\*/g, ' \\emph{$1}').replace(/(\#\w)/g, '\\$1')).join('')
@@ -120,16 +182,18 @@ export function buildBook(root: string, locale: Locale, outputDir: string, bookD
 const meta = import.meta as unknown as { main: boolean }
 if (meta.main) {
   const [locale, outputDir] = process.argv.slice(2)
-  if (locale !== 'en' && locale !== 'zh-TW' && locale !== 'all' || !outputDir) {
-    throw new Error('Usage: BOOK_DATE=YYYY-MM-DD bun scripts/book/build.ts <en|zh-TW|all> OUTPUT_DIR')
+  if ((locale !== 'all' && !isEdition(locale)) || !outputDir) {
+    throw new Error(`Usage: BOOK_DATE=YYYY-MM-DD bun scripts/book/build.ts <${EDITIONS.join('|')}|all> OUTPUT_DIR`)
   }
   const bookDate = process.env.BOOK_DATE
   if (!bookDate) throw new Error('BOOK_DATE is required')
   if (locale === 'all') {
+    // `all` stays upstream's two editions, and the manifest with them. The fork's editions
+    // are partial and are built one at a time; folding them in here would put a
+    // half-translated book into the release pipeline's manifest.
     const sourceRevision = process.env.SOURCE_REVISION ?? process.env.GITHUB_SHA
     if (!sourceRevision) throw new Error('SOURCE_REVISION or GITHUB_SHA is required')
-    buildBook(process.cwd(), 'en', join(outputDir, 'en'), bookDate)
-    buildBook(process.cwd(), 'zh-TW', join(outputDir, 'zh-TW'), bookDate)
+    for (const edition of UPSTREAM_EDITIONS) buildBook(process.cwd(), edition, join(outputDir, edition), bookDate)
     writeManifest(process.cwd(), outputDir, bookDate, sourceRevision)
   } else {
     buildBook(process.cwd(), locale, outputDir, bookDate)
