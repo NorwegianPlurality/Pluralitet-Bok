@@ -67,6 +67,11 @@ describe('the proper-name heuristic', () => {
     expect(glossaryWarns(norwegian('Han nevnte Social Media Norge i forbifarten.'))).toHaveLength(0)
   })
 
+  test('ignores a term that closes a larger name', () => {
+    // Protection here comes only from the left: "til" says nothing, "National" does.
+    expect(glossaryWarns(norwegian('Han jobber i National Social Media til daglig.'))).toHaveLength(0)
+  })
+
   test('still flags a term whose neighbours are ordinary words', () => {
     expect(glossaryWarns(norwegian('Derfor er Social Media viktig for oss.'))).not.toHaveLength(0)
   })
@@ -75,18 +80,27 @@ describe('the proper-name heuristic', () => {
     expect(glossaryWarns(norwegian('Social Media endrer alt for oss.'))).not.toHaveLength(0)
   })
 
-  // KNOWN LIMITATION, pinned deliberately rather than left undiscovered.
-  //
-  // The heuristic reads the adjacent word without regard for sentence boundaries, so a
-  // term opening a sentence whose predecessor ended on a capitalised word reads as part
-  // of a proper name and is skipped. Norwegian prose ends sentences on proper nouns
-  // constantly — Norge, Taiwan, Google — so this is a real miss, not a corner case.
-  //
-  // This test asserts what the checker does today. When the heuristic learns about
-  // sentence boundaries it will fail, which is the point: flip it to `not.toHaveLength(0)`
-  // at that moment. Nothing here blocks a merge — the whole check is advisory.
-  test('misses a term opening a sentence after a capitalised word', () => {
-    expect(glossaryWarns(norwegian('Det gjelder Norge. Social Media dominerer nå.'))).toHaveLength(0)
+  // The signal is read only inside a sentence. A term opening a sentence is preceded by a
+  // capitalised word whenever the sentence before it ended on one, and Norwegian prose
+  // ends sentences on proper nouns constantly, so reading that as a name would excuse the
+  // most ordinary position a term can occupy.
+  test('flags a term opening a sentence after a capitalised word', () => {
+    expect(glossaryWarns(norwegian('Det gjelder Norge. Social Media dominerer nå.'))).not.toHaveLength(0)
+  })
+
+  test.each([
+    ['full stop', 'Hva med Norge? Social Media dominerer nå.'],
+    ['exclamation', 'Se på Norge! Social Media dominerer nå.'],
+    ['colon', 'Ett eksempel er Norge: Social Media dominerer nå.'],
+    ['quoted clause', 'Han sa «dette gjelder Norge». Social Media dominerer nå.'],
+  ])('flags a term opening a sentence after %s', (_label, body) => {
+    expect(glossaryWarns(norwegian(body))).not.toHaveLength(0)
+  })
+
+  test('still ignores a name that merely contains a full stop', () => {
+    // "U.S." ends in a stop without ending a sentence. The name continues to the right,
+    // which is what keeps this one quiet — the two sides of the signal are independent.
+    expect(glossaryWarns(norwegian('Rapporten kom fra U.S. Social Media Association i fjor.'))).toHaveLength(0)
   })
 })
 

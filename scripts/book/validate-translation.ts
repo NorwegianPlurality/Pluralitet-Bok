@@ -216,18 +216,33 @@ function checkCrossRefs(
 
 const escapeRe = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
+const capitalised = (w: string): boolean => /^[\p{Lu}]/u.test(w)
+
+/**
+ * A token that closes a sentence, allowing for a closing bracket or quote after the stop.
+ * Whatever follows such a token is capitalised because a new sentence began, so the
+ * neighbour carries no evidence either way about a proper name.
+ */
+const endsSentence = (w: string): boolean => /[.!?:;…][)\]"'»”]?$/u.test(w)
+
 /**
  * Finds the English term as a standalone word, ignoring occurrences that sit inside a
  * larger proper name — "Venture Capital" inside "National Venture Capital Association",
  * "Plurality" inside "Plurality Institute". An adjacent capitalised word is the signal.
+ *
+ * The signal is read only across a sentence's interior. A term opening a sentence is
+ * preceded by a capitalised word whenever the sentence before it ended on one, and
+ * Norwegian prose ends sentences on proper nouns constantly — Norge, Taiwan, Google — so
+ * treating that as a name would silently excuse the most ordinary position a term can
+ * occupy. A name broken across a full stop is not a name.
  */
 function standaloneMatch(prose: string, term: string): boolean {
   const re = new RegExp(`(\\S+\\s+)?(?<![\\p{L}])${escapeRe(term)}(?![\\p{L}])(\\s+\\S+)?`, 'gu')
   for (const m of prose.matchAll(re)) {
     const before = (m[1] ?? '').trim()
     const after = (m[2] ?? '').trim()
-    const capitalised = (w: string) => /^[\p{Lu}]/u.test(w)
-    if (capitalised(before) || capitalised(after)) continue
+    const nameToTheLeft = capitalised(before) && !endsSentence(before)
+    if (nameToTheLeft || capitalised(after)) continue
     return true
   }
   return false
