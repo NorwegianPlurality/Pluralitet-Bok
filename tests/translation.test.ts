@@ -190,6 +190,27 @@ describe('length band', () => {
     })
     expect(warns(root).some((w) => w.check === 'translate:length')).toBe(true)
   })
+
+  // Simplifying is adapting to a reader, not compressing for one. A chapter that comes
+  // out of stage 1 at roughly its source length has done nothing wrong, and the checker
+  // that said otherwise would push contributors to cut content to satisfy it.
+  test('accepts a simplification that stays as long as its source', () => {
+    const src = '# T\n' + 'word '.repeat(1000) + '\n'
+    const root = repo({
+      'contents/english/3-1-test.md': src,
+      'contents/simplified-english/3-1-test.md': '# T\n' + 'word '.repeat(1000) + '\n',
+    })
+    expect(warns(root).some((w) => w.check === 'simplify:length')).toBe(false)
+  })
+
+  test('warns when a simplification cuts a third of the text away', () => {
+    const src = '# T\n' + 'word '.repeat(1000) + '\n'
+    const root = repo({
+      'contents/english/3-1-test.md': src,
+      'contents/simplified-english/3-1-test.md': '# T\n' + 'word '.repeat(650) + '\n',
+    })
+    expect(warns(root).some((w) => w.check === 'simplify:length')).toBe(true)
+  })
 })
 
 describe('pairing', () => {

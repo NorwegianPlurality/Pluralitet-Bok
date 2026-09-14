@@ -11,10 +11,18 @@ are one-line pointers here — never copies. Edit this file; the pointers follow
 ## The pipeline
 
     contents/english/            the upstream book, read-only in this fork
-      ↓  stage 1: simplify
-    contents/simplified-english/ shorter, plainer English, same substance
-      ↓  stage 2: translate
+      ↓  stage 1: simplify    — adapt to the reader's education and vocabulary
+    contents/simplified-english/ plainer English, same substance
+      ↓  stage 2: translate   — adapt to her language
     contents/norwegian/          Norwegian Bokmål
+
+Both stages write for the same reader. She is a demographic, not a language: a 45-year-old
+with a master's in a social science, fluent in institutions and without notation, described
+in full in `docs/translation/audience.md`. The American original was written for someone
+with a different education and a different field of experience, not merely someone speaking
+a different language — so the text is adapted twice, and the two passes do different work.
+Neither of them is a compression pass. The goal is accessibility, and a paragraph that
+explains a term the reader lacks is longer than one that assumed it.
 
 **All three layers use the exact same filenames.** `3-2-connected-society.md` is the same
 chapter in each folder. Norwegian titles live in the chapter's `#` heading and in
@@ -77,18 +85,35 @@ vp run translation:validate
 
 ### Stage 1, simplify
 
+Read `docs/translation/audience.md` once, and your chapter's note under
+`docs/translation/audience/`, before you start. This stage adapts the text to the reader's
+education, vocabulary and field of experience — everything except her language.
+
 Work paragraph by paragraph. Keep the paragraph structure: one source paragraph becomes one
 output paragraph, so the stages stay alignable.
 
-- Break long sentences into shorter ones.
-- Cut hedging and academic filler.
-- Keep every argument, example, name and number. Simplifying is not summarising — if the
-  output is much shorter than the input, content was lost rather than tightened. Expect
-  roughly 55–95% of the source length.
+- Break long sentences into shorter ones. One idea per paragraph (R7).
+- Plain words in place of academic register. Keep technical vocabulary a serious newspaper
+  already uses (R3) — simplify toward everyday English, never toward another profession's.
+- Explain the phenomenon before naming it (R1), and place every unfamiliar person in one
+  line at first mention (R4). **Only this stage can do R1 and R4**: a translation branch may
+  not add content, so a term left unexplained here is never explained.
+- Cut hedging and academic filler. Keep every argument, example, name and number.
+- Do not add what the source does not claim. Writing out an assumption is adaptation;
+  adding a fact is editing, and it belongs to the editor.
+- Expect roughly the source length — the checker expects 85–120%. Much shorter means
+  content was lost rather than tightened.
 
 ### Stage 2, translate
 
 - Natural Bokmål. Not stiff, not bureaucratic, not machine-literal.
+- Read `docs/translation/audience.md` once, and your chapter's note under
+  `docs/translation/audience/` before you start. They set the register: who the edition is
+  written for and how plainly to write. The editor owns them.
+- This stage adapts the text to her language, and explains terms with no Norwegian
+  equivalent. Rules R2, R5 and R6 bite hardest here: administrative Norwegian makes claims
+  about Norwegian law that the original does not make, and the American political labels
+  are false friends.
 - Consult `translation/glossary.tsv` for terminology. If a term is missing, propose it in
   `translation/proposals/<chapter-id>.tsv` rather than deciding silently.
 - `policy` in the glossary means: `translate` use the Norwegian; `keep` leave the English
@@ -97,7 +122,54 @@ output paragraph, so the stages stay alignable.
 - `⿻` is always the symbol, never spelled out.
 - English survives on purpose inside quotations, work titles and proper names. *The Age of
   Surveillance Capitalism* stays in English.
-- Expect roughly 70–115% of the simplified English length.
+- Expect roughly 80–120% of the simplified English length.
+
+## The editor
+
+Simplifying and translating are per-chapter jobs. Editing is not: the editor is the one
+role that holds the whole book at once, and the only one that may change what the book
+sounds like rather than what a single chapter says.
+
+The editor owns the answer to "who is this edition for". That answer is written down in
+`docs/translation/audience.md` — a composite target reader built from published figures on
+the Storting and the Norwegian press, the nine rules of register that follow from it, and
+a per-chapter note under `docs/translation/audience/` sharing the chapter's filename.
+Everyone who touches a chapter — at either stage — reads the profile once and their own
+chapter's note before starting.
+
+### What the editor decides
+
+- **The register.** Rules R1–R9 in the profile, and which stage each one binds. They are
+  editorial judgment, not checked by the validator, and they are the editor's to revise when
+  the evidence moves.
+- **Shared terminology.** The editor folds `translation/proposals/*.tsv` into
+  `translation/glossary.tsv` between waves, and is the only role that may edit the glossary
+  or `translation/chapter-titles.tsv`.
+- **The apparatus.** Preface, glossary, and translator's notes (`O.a.`). Norwegian
+  anchoring — the commons, the tripartite model, BankID and Altinn, EEA law — belongs here
+  and nowhere else.
+- **Whether a recurring note has become a rule.** When the same guidance appears in many
+  chapter notes, it should move into this file and become checkable.
+
+### What the editor must not do
+
+- **Change `contents/english/`.** Upstream text; fixes go to the upstream repository.
+- **Soften the argument.** The profile governs wording, not substance. A chapter written
+  from American premises — health insurance, capitalism — keeps those premises.
+- **Domesticate institutions.** Taiwan's moda does not become a Norwegian ministry, US
+  health insurance does not become folketrygden, g0v does not become a dugnad.
+- **Break terminology back to the field.** A programmer or democracy activist must still
+  recognise the term and be able to find the English again. Simplify toward everyday
+  Norwegian, never toward another profession's vocabulary — a word only lawyers and
+  economists share is a failure, not a simplification.
+- **Edit a chapter under a translator's name.** Editorial disagreement goes in review on
+  the chapter's pull request.
+
+### Editing a chapter note
+
+Notes under `docs/translation/audience/` are advice, and a translator may depart from one
+with a reason in the pull request. If they do so twice for the same reason, the note is
+wrong — fix the note.
 
 ## Working without repository access
 
@@ -111,5 +183,7 @@ same rules either way.
 - `docs/translation/simplify.md` — stage 1 in detail
 - `docs/translation/translate.md` — stage 2 in detail
 - `docs/translation/review.md` — what a reviewer checks
+- `docs/translation/audience.md` — who this edition is for, and the register that follows
+- `docs/translation/audience/` — one note per chapter, same filename as the chapter
 - `translation/glossary.tsv` — term decisions
 - `translation/chapter-titles.tsv` — chapter ids and Norwegian titles

@@ -17,10 +17,19 @@ export interface Issue {
   message: string
 }
 
-/** Word-count bands per stage, set from the ratios observed across completed chapters. */
+/**
+ * Word-count bands per stage. Neither stage is a compression stage: both adapt the text
+ * to the same reader, and a chapter that explains a term the reader lacks is longer than
+ * one that assumed it. So the bands sit around parity rather than below it. What they
+ * catch is loss — a stage that quietly dropped a passage — and, at the top end, a stage
+ * that started adding material of its own.
+ *
+ * Bokmal compounds where English uses two words, so a faithful translation lands a little
+ * under its source; the translate band is asymmetric for that reason alone.
+ */
 const RATIO_BANDS: Record<Stage, { min: number; max: number }> = {
-  simplify: { min: 0.55, max: 0.95 },
-  translate: { min: 0.7, max: 1.15 },
+  simplify: { min: 0.85, max: 1.2 },
+  translate: { min: 0.8, max: 1.2 },
 }
 
 /**
@@ -259,6 +268,34 @@ function checkGlossary(chapter: string, outMd: string, glossary: GlossaryEntry[]
   return issues
 }
 
+/**
+ * Stage 1 may rewrite any sentence, and a glossary term can be paraphrased out of the
+ * chapter without a single check noticing: the glossary is keyed on the English term, the
+ * translator applies it by finding that term, and the glossary scan above only ever reads
+ * Norwegian. A term that vanishes here silently loses the decision made about it.
+ *
+ * Advisory, like the Norwegian scan and for the same reason: a term can legitimately
+ * disappear when the sentence carrying it was one the source used twice.
+ */
+function checkTermSurvival(chapter: string, src: string, out: string, glossary: GlossaryEntry[]): Issue[] {
+  const issues: Issue[] = []
+  const srcProse = proseOnly(src)
+  const outProse = proseOnly(out)
+
+  for (const entry of glossary) {
+    if (entry.policy === 'todo' || !entry.enTerm) continue
+    if (!standaloneMatch(srcProse, entry.enTerm)) continue
+    if (standaloneMatch(outProse, entry.enTerm)) continue
+    issues.push({
+      level: 'warn',
+      chapter,
+      check: 'simplify:terms',
+      message: `glossary term "${entry.enTerm}" is in the English but not in the simplified English; the translator applies the glossary by finding it`,
+    })
+  }
+  return issues
+}
+
 export function validateTranslation(root: string): Issue[] {
   const issues: Issue[] = []
   const titles = readChapterTitles(root)
@@ -300,8 +337,15 @@ export function validateTranslation(root: string): Issue[] {
           level: 'warn',
           chapter: file,
           check: `${stage}:length`,
-          message: `word ratio ${ratio.toFixed(2)} outside expected ${band.min}–${band.max}; check for dropped passages`,
+          message:
+            ratio < band.min
+              ? `word ratio ${ratio.toFixed(2)} below expected ${band.min}–${band.max}; check for dropped passages`
+              : `word ratio ${ratio.toFixed(2)} above expected ${band.min}–${band.max}; check for material this stage added`,
         })
+      }
+
+      if (stage === 'simplify') {
+        issues.push(...checkTermSurvival(file, src, out, glossary))
       }
 
       if (stage === 'translate') {
