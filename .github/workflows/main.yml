@@ -3,7 +3,12 @@ name: CI & Book Publication
 on:
   push:
     branches:
+      # main mirrors upstream; norwegian is this fork's default and where work lands.
+      # The publication jobs below stay gated on main plus the upstream owner, so
+      # adding norwegian here runs verification and builds only.
       - main
+      - norwegian
+      - simplify
   pull_request:
   workflow_dispatch:
 
