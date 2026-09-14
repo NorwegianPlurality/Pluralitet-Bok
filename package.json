@@ -9,6 +9,7 @@
     "@vivliostyle/cli": "11.0.4",
     "adm-zip": "0.5.12",
     "pdf-lib": "1.17.1",
+    "typescript": "7.0.2",
     "vite-plus": "0.2.4",
     "vitepress": "1.6.4",
     "vitest": "4.1.10"
