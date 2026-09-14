@@ -117,6 +117,8 @@ export interface RebuildResult {
   source: string
   replaced: string[]
   removed: number
+  /** True when the snapshot was already current and no commit was made. */
+  unchanged: boolean
 }
 
 export function rebuildSimplify(
@@ -163,6 +165,14 @@ export function rebuildSimplify(
   const parents = snapshotParents(sourceOid, previous, contained)
 
   const replaced = overlay.map((e) => e.path.slice(OVERLAY_DIR.length + 1)).sort()
+
+  // Refreshing is cheap and people will re-run this; without the check, each run that
+  // changed nothing still adds a commit whose diff is empty, and the branch's history
+  // stops being a record of when the edition actually moved.
+  if (previous !== undefined && git(['rev-parse', `${previous}^{tree}`]).trim() === treeOid) {
+    return { commit: previous, source: sourceOid, replaced, removed, unchanged: true }
+  }
+
   const message = [
     `Rebuild the simplified-English edition from ${source}`,
     '',
@@ -194,20 +204,22 @@ export function rebuildSimplify(
   }
   git(['branch', '-f', target, commit])
 
-  return { commit, source: sourceOid, replaced, removed }
+  return { commit, source: sourceOid, replaced, removed, unchanged: false }
 }
 
 if (import.meta.main) {
   const source = process.argv[2] ?? 'norwegian'
   const target = process.argv[3] ?? 'simplify'
-  const { commit, replaced, removed } = rebuildSimplify(source, target)
+  const { commit, replaced, removed, unchanged } = rebuildSimplify(source, target)
   console.log(
-    [
-      `${target} -> ${commit.slice(0, 7)} (rebuilt from ${source})`,
-      `  removed  contents/norwegian/ (${removed} files)`,
-      ...replaced.map((p) => `  replaced ${p} from ${OVERLAY_DIR}/`),
-      '',
-      `Publish with: git push origin ${target}`,
-    ].join('\n'),
+    unchanged
+      ? `${target} is already current at ${commit.slice(0, 7)}; nothing to rebuild.`
+      : [
+          `${target} -> ${commit.slice(0, 7)} (rebuilt from ${source})`,
+          `  removed  contents/norwegian/ (${removed} files)`,
+          ...replaced.map((p) => `  replaced ${p} from ${OVERLAY_DIR}/`),
+          '',
+          `Publish with: git push origin ${target}`,
+        ].join('\n'),
   )
 }
