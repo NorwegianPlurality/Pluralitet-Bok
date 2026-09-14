@@ -2,6 +2,53 @@ ReadMe for *Plurality: The Future of Collaborative Technology and Democracy* by 
 
 Welcome to *Plurality*, an open, git-based collaborative book project that aims to offer a vision for the future of technology focused around empowering and bridging social difference.  While we have outlined the substance of the book elsewhere (see https://www.plurality.net), the purpose of this ReadMe is to provide an overview of the collaboration that will help create the book aimed at those who will participate in doing so.
 
+# Contributing to the simplified-English edition
+
+This branch carries a plainer English rendering of the book. Every argument, example,
+name, number, citation and figure of the original survives; what changes is the register.
+The original was written for a reader with a particular education and a particular field
+of experience, and this edition is adapted for a reader with different ones — the same
+substance, without the academic vocabulary and the assumed references.
+
+    contents/english/             the upstream text, unchanged here
+      ↓  adapted to the reader's education and vocabulary, not to another language
+    contents/simplified-english/  this edition
+
+It is not a summary or an abridgement. A paragraph that explains a term the reader lacks is
+longer than one that assumed it, and the checker enforces that: a chapter that comes out
+much shorter than its source has lost something rather than tightened it.
+
+One job is one chapter, on its own branch, in its own pull request — `simplify/3-2`, cut
+from this branch, changing only `contents/simplified-english/3-2-connected-society.md`.
+Every chapter can be worked at once; none waits on another. See what can be started now:
+
+```bash
+vp run translation:next
+```
+
+Check your work, which validates this edition and assembles it, before opening a pull
+request:
+
+```bash
+vp run edition:check:en-simple
+```
+
+Who this edition is written for, and the rules of register that follow, are in
+[docs/translation/audience.md](docs/translation/audience.md), with one note per chapter in
+`docs/translation/audience/`. The stage is described in
+[docs/translation/simplify.md](docs/translation/simplify.md). Contributors working through
+a chat assistant with no repository access can copy a ready-made prompt from
+[docs/translation/prompts/simplify.md](docs/translation/prompts/simplify.md).
+
+Full instructions, for people and AI assistants alike, are in [AGENTS.md](AGENTS.md).
+
+This edition is also the source the Norwegian translation is made from, on the `norwegian`
+branch, which merges this one. The registries under `translation/` are shared with it, so
+they carry Norwegian columns that nothing here reads; the glossary matters on this branch
+because its English side is the terminology this edition is expected to preserve.
+[docs/translation/editions.md](docs/translation/editions.md) describes both editions and how
+each is built.
+
 # Overview
 
 The initial maintainers of this project are Audrey Tang (Taiwan's 1st Digital Minister, see https://digitalminister.one) and E. Glen Weyl (see https://www.glenweyl.com).   However, we plan to progressively decentralize control of the project using a new git-native formal governance protocol using blockchain-like affordances called Gov4Git (see https://github.com/gov4git/gov4git).  We plan to transition to full community control when we print physical copies of the book.  All material here is CC0 and we hope that speakers of languages other than English and from other sub-linguistic cultures (e.g. religious communities, academic disciplines that we are less familiar with, etc.) will fork this repo and build their own versions, governed according to the same principles.  In what follows we discuss each of these points and provide further links to relevant materials.

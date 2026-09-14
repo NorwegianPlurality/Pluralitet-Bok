@@ -9,10 +9,27 @@ export default defineConfig({
     tasks: {
       typecheck: { command: 'tsc --noEmit' },
       test: { command: 'vitest run' },
-      check: { command: ['tsc --noEmit', 'vitest run'] },
+      check: { command: ['tsc --noEmit', 'vitest run', 'bun scripts/book/validate-translation.ts'] },
       'docs:dev': { command: 'vitepress dev docs' },
       'docs:build': { command: 'vitepress build docs' },
       'docs:preview': { command: 'vitepress preview docs' },
+      // Git has no built-in `ours` driver; .gitattributes only names it. Without this the
+      // merge=ours entries there are silently ignored and the conflicts come back.
+      'setup:git': { command: 'git config merge.ours.driver true' },
+
+      'translation:validate': { command: 'bun scripts/book/validate-translation.ts' },
+      'translation:progress': { command: 'bun scripts/translation/refresh-progress.ts' },
+      'translation:next': { command: 'bun scripts/translation/next-tasks.ts' },
+
+      // One edition at a time. Each is reviewed and published on its own, so each needs a
+      // verification whose exit code speaks for it alone: `edition:check:en-simple` stays
+      // green while the Norwegian is mid-translation, and the reverse.
+      'edition:validate:en-simple': { command: 'bun scripts/book/validate-translation.ts --stage=simplify' },
+      'edition:validate:nb': { command: 'bun scripts/book/validate-translation.ts --stage=translate' },
+      'edition:assemble:en-simple': { command: 'bun scripts/book/build.ts en-simple dist/publication/en-simple' },
+      'edition:assemble:nb': { command: 'bun scripts/book/build.ts nb dist/publication/nb' },
+      'edition:check:en-simple': { command: ['vp run edition:validate:en-simple', 'vp run edition:assemble:en-simple'] },
+      'edition:check:nb': { command: ['vp run edition:validate:nb', 'vp run edition:assemble:nb'] },
       'book:assemble': { command: 'bun scripts/book/build.ts all dist/publication' },
       'book:manifest': { command: 'bun scripts/book/manifest.ts dist/publication' },
       'book:candidate:prepare': { command: 'bun scripts/book/prepare-vivliostyle.ts' },

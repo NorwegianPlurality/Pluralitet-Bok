@@ -1,0 +1,10 @@
+translation/proposals/*.tsv  merge=union
+translation/progress.tsv     merge=ours   linguist-generated=true
+
+# Each edition has its own front page and its own agent instructions, and they are meant to
+# differ: ReadMe.md is Norwegian on `norwegian` and English on `simplify`, and AGENTS.md
+# addresses a translator on one branch and an English editor on the other. Without this,
+# every `git merge simplify` into `norwegian` conflicts on both files, forever, for no
+# decision anyone needs to make. `ours` keeps the merging branch's own copy.
+ReadMe.md                    merge=ours
+AGENTS.md                    merge=ours
