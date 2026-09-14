@@ -88,11 +88,13 @@ This disengagement extends to digital services and connectivity. Many wealthy de
 
 [^EGDI]:_United Nations Department of Economic and Social Affairs_. E-Government Knowledge Database, 2022 available at https://publicadministration.un.org/egovkb/Data-Center
 
+Connectivity shows the same pattern, though the data are mixed. Many high-functioning democracies, such as the Scandinavian countries, have high quality and widely available internet. But leading authoritarian regimes dramatically outperform democracies at similar development levels. According to Speedtest.net, the PRC ranks 16th in the world in internet speeds while ranking only 72nd in income per head; Saudi Arabia and other Gulf monarchies similarly punch above their weight[^DigitalDisconnect]. The gap is more dramatic on 5G, the latest generation of mobile connectivity: a range of surveys find Saudi Arabia and the PRC consistently among the 10 best-covered jurisdictions, far above their income levels.
+
 The most striking gap is digital public goods. Communication and knowledge now flow mainly through social media and search engines. The public square has moved online. But democratic countries have almost entirely failed to support digital public infrastructure. The non-profit [Mastodon](https://joinmastodon.org/) runs on Patreon donations. Open source software and Wikipedia are critical public goods but receive almost no government support[^Mastodonsupport]. Meanwhile authoritarian regimes [forge ahead](https://www.atlanticcouncil.org/cbdctracker/) with central bank digital currencies while most democracies are still exploring the idea.
 
 [^Mastodonsupport]: Sara Perez, "Amid Twitter chaos, Mastodon grew donations 488% in 2022, reached 1.8M monthly active users", *Tech Crunch*, October 2, 2023 at https://techcrunch.com/2023/10/02/amid-twitter-chaos-mastodon-grew-donations-488-in-2022-reached-1-8m-monthly-active-users/)
 
-Authoritarian regimes have also built cities and redesigned regulations to enable experiments with new technologies — driverless cars in Shenzhen, smart cities in Saudi Arabia. In democratic countries, even modest projects like Google's Sidewalk Labs have been blocked by local opposition[^Sideways].
+Authoritarian regimes have also built cities and redesigned regulations to enable experiments with new technologies — driverless cars in Shenzhen, smart cities in Saudi Arabia. The PRC has gone further, building a detailed national technology strategy covering nearly every aspect of policy, regulation and investment[^TechInvestmentPRC]. In democratic countries, even modest projects like Google's Sidewalk Labs have been blocked by local opposition[^Sideways].
 
 [^Sideways]: Josh O'Kane, *Sideways: The City Google Couldn't Buy* (Toronto: Random House Canada, 2022).
 
@@ -229,7 +231,7 @@ On the first point, Acemoglu, Restrepo, and collaborators show that during the G
 
 The role of "neoliberal" policy in this story is widely debated. We refer readers to related writing for a review of the evidence[^PosnerWeylBook][^PhilipponBook]. But clearly, the defining direction of this period was an embrace of market capitalism — closely tied to the Libertarian idea that globalization makes collective governance impossible. The last half-century has been defined by Technocracy in technology and Libertarianism in policy. Both have largely failed.
 
-The biggest real breakthroughs of this period — personal computers, the internet, smartphones — fit neither vision. They augmented human creativity rather than automating it. They enabled communication and connection rather than private markets. They came from a different tradition. Even the genuine technological leaps of the Digital Stagnation largely ran counter to its dominant ideologies.
+The biggest real breakthroughs of this period — personal computers, the internet, smartphones — fit neither vision. They augmented human creativity rather than automating it — what is often called "intelligence augmentation," or IA, rather than AI[^IA]. They enabled communication and connection rather than private markets. They came from a different tradition. Even the genuine technological leaps of the Digital Stagnation largely ran counter to its dominant ideologies.
 
 [^IA]: John Markoff, *Machines of Loving Grace: The Quest for Common Ground Between Humans and Robots* (New York: Ecco, 2015).
 
