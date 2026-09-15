@@ -1,9 +1,9 @@
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join, relative, resolve, isAbsolute } from 'node:path'
-import { assembleLocale } from './build'
+import { assembleLocale, isEdition, type AssembleOptions, type Locale } from './build'
 
-export function prepareVivliostyle(root: string, locale: 'en' | 'zh-TW', buildDir: string, bookDate: string): void {
-  if (!locale || (locale !== 'en' && locale !== 'zh-TW')) {
+export function prepareVivliostyle(root: string, locale: Locale, buildDir: string, bookDate: string, options: AssembleOptions = {}): void {
+  if (!locale || !isEdition(locale)) {
     throw new Error(`Invalid BOOK_LOCALE: ${locale}`)
   }
   if (!buildDir || buildDir.trim() === '') {
@@ -24,7 +24,7 @@ export function prepareVivliostyle(root: string, locale: 'en' | 'zh-TW', buildDi
   const creditsValue = JSON.parse(readFileSync(creditsPath, 'utf8'))
 
   // 1. Assemble raw manuscript
-  const assembled = assembleLocale(root, locale, bookDate, creditsValue)
+  const assembled = assembleLocale(root, locale, bookDate, creditsValue, options)
   let content = assembled.markdown
 
   // 2. Remove raw LaTeX fenced blocks

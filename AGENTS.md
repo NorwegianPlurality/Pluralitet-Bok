@@ -74,6 +74,13 @@ vp run edition:check:en-simple
 - **Cross-chapter links resolve.** Links to `https://www.plurality.net/v/chapters/<id>/…`
   must point at a chapter id that exists in `translation/chapter-titles.tsv`.
 - **Filenames match `contents/english/` exactly.**
+- **Real names, titles and quotations are not simplified.** Rewriting a quotation
+  attributed to a named person does not adapt it, it puts words in their mouth. Keep quoted
+  text as it stands; the attribution line around it is the book's own prose and may be
+  plained down. At the translate stage a title may be rendered in Norwegian as far as the
+  language allows — *Professor of Economics* → *professor i økonomi* — but never mapped
+  onto the nearest domestic office (R6): a US congressman is not a stortingsrepresentant.
+  Where no faithful rendering exists, keep the original.
 
 ## Judgment — not checked, reviewed by a human
 
@@ -178,5 +185,6 @@ enforces the same rules either way.
 - `docs/translation/audience.md` — who this edition is for, and the register that follows
 - `docs/translation/audience/` — one note per chapter, same filename as the chapter
 - `docs/translation/editions.md` — the two editions, their branches, and how each is built
+- `docs/translation/plan.md` — the current working plan, and standing rules discovered doing it
 - `translation/glossary.tsv` — term decisions
 - `translation/chapter-titles.tsv` — chapter ids

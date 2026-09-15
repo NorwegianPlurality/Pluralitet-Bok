@@ -2,6 +2,7 @@ import { rmSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { spawnSync, SpawnSyncOptions } from 'node:child_process'
 import { prepareVivliostyle } from './prepare-vivliostyle'
+import { EDITIONS, UPSTREAM_EDITIONS, editionMetadata, isEdition, parseChapters, type Locale } from './build'
 import { validateCandidate } from './validate-candidate'
 
 export type SpawnFn = (
@@ -16,13 +17,17 @@ const defaultSpawn: SpawnFn = (cmd, args, opts) => {
 }
 
 export async function renderLocale(
-  locale: 'en' | 'zh-TW',
+  locale: Locale,
   bookDate: string,
   outputRoot: string,
-  spawnFn: SpawnFn = defaultSpawn
+  spawnFn: SpawnFn = defaultSpawn,
+  chapters?: string[]
 ): Promise<void> {
-  const buildDir = join(outputRoot, '.vivliostyle', locale)
-  const prefix = `vivliostyle-${locale}-candidate`
+  // An excerpt gets its own build directory and its own output name, so rendering one
+  // chapter for review never overwrites the edition's full book.
+  const suffix = chapters?.length ? `-ch${chapters.join('_')}` : ''
+  const buildDir = join(outputRoot, '.vivliostyle', `${locale}${suffix}`)
+  const prefix = `vivliostyle-${locale}${suffix}-candidate`
   const pdfPath = join(outputRoot, 'candidate', `${prefix}.pdf`)
   const epubPath = join(outputRoot, 'candidate', `${prefix}.epub`)
 
@@ -32,15 +37,21 @@ export async function renderLocale(
 
   // 2. Compile and prepare manuscript on the fly
   const projectRoot = existsSync(join(outputRoot, 'scripts', 'credits.json')) ? outputRoot : process.cwd()
-  prepareVivliostyle(projectRoot, locale, buildDir, bookDate)
+  prepareVivliostyle(projectRoot, locale, buildDir, bookDate, chapters ? { chapters } : {})
 
   // 3. Invoke local Vivliostyle build
+  const meta = editionMetadata(locale)
   const env = {
     ...process.env,
     BOOK_LOCALE: locale,
     BUILD_DIR: buildDir,
     OUTPUT_ROOT: outputRoot,
     BOOK_DATE: bookDate,
+    BOOK_TITLE: meta.title,
+    BOOK_AUTHOR: meta.author,
+    BOOK_LANGUAGE: meta.language,
+    BOOK_COVER: meta.cover,
+    BOOK_OUTPUT_SUFFIX: suffix,
   }
 
   const res = spawnFn('bunx', ['vivliostyle', 'build', '--config', 'publication/vivliostyle.config.mjs'], {
@@ -63,35 +74,41 @@ export async function renderLocale(
 }
 
 export async function runOrchestrator(
-  target: 'en' | 'zh-TW' | 'all',
+  target: Locale | 'all',
   bookDate: string,
   outputRoot: string,
-  spawnFn: SpawnFn = defaultSpawn
+  spawnFn: SpawnFn = defaultSpawn,
+  chapters?: string[]
 ): Promise<void> {
   if (target === 'all') {
-    await renderLocale('en', bookDate, outputRoot, spawnFn)
-    await renderLocale('zh-TW', bookDate, outputRoot, spawnFn)
-    // Run candidate validation
+    // `all` stays upstream's pair and its validation: the fork's editions are partial and
+    // are rendered one at a time.
+    for (const edition of UPSTREAM_EDITIONS) await renderLocale(edition, bookDate, outputRoot, spawnFn)
     await validateCandidate(outputRoot)
   } else {
-    await renderLocale(target, bookDate, outputRoot, spawnFn)
+    await renderLocale(target, bookDate, outputRoot, spawnFn, chapters)
   }
 }
 
 // Cast import.meta to read Bun-specific main property during direct script execution
 const meta = import.meta as unknown as { main: boolean }
 if (meta.main) {
-  const target = process.argv[2] as 'en' | 'zh-TW' | 'all' | undefined
-  if (!target || (target !== 'en' && target !== 'zh-TW' && target !== 'all')) {
-    throw new Error('Usage: BOOK_DATE=YYYY-MM-DD bun scripts/book/render-candidate.ts <en|zh-TW|all>')
+  const argv = process.argv.slice(2)
+  const chapters = parseChapters(argv)
+  const target = argv.filter((a) => !a.startsWith('--'))[0] as Locale | 'all' | undefined
+  if (!target || (target !== 'all' && !isEdition(target))) {
+    throw new Error(
+      `Usage: BOOK_DATE=YYYY-MM-DD bun scripts/book/render-candidate.ts <${EDITIONS.join('|')}|all> [--chapters=1]`,
+    )
   }
+  if (chapters && target === 'all') throw new Error('--chapters applies to a single edition, not to `all`')
   const bookDate = process.env.BOOK_DATE
   if (!bookDate || !/^\d{4}-\d{2}-\d{2}$/.test(bookDate)) {
     throw new Error('Valid BOOK_DATE (YYYY-MM-DD) environment variable is required')
   }
   const outputRoot = process.env.OUTPUT_ROOT || 'dist/publication'
   try {
-    await runOrchestrator(target, bookDate, outputRoot)
+    await runOrchestrator(target, bookDate, outputRoot, defaultSpawn, chapters)
     console.log('Candidate render process completed successfully.')
   } catch (err: unknown) {
     console.error('Candidate render process failed:', err)
