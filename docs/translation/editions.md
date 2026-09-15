@@ -110,8 +110,15 @@ release manifest, untouched by any of this.
 ## Publishing
 
 Neither fork edition is published anywhere yet, and a release workflow is written but
-parked rather than active. `publishing.md` has what exists, what is parked, and the three
-decisions still open.
+parked rather than active. `publishing.md` has what exists, what is parked, and what is
+left to settle before it runs.
+
+## Versions
+
+Each edition is numbered on its own, for the same reason it is verified and built on its
+own. What the number means changes over the fork's life — `0.x` is an unreviewed machine
+draft, `1.x` is edited, and after that the book goes rolling like upstream.
+`releases.md` defines the three paradigms, the gates between them, and the tag names.
 
 ## Adding another edition
 
