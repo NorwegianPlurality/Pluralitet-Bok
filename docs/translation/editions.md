@@ -75,6 +75,19 @@ Each runs that edition's validation and then assembles its manuscript into
 simplify-stage checks, `nb` the translate-stage ones — so the Norwegian being mid-flight
 cannot fail the simplified English, or the reverse.
 
+`vp run edition:pdf:<edition>` typesets that manuscript, and writes the PDF and EPUB into
+the same directory under the edition's own name — `dist/publication/nb/Plurality-norwegian.pdf`.
+For one chapter, call the renderer directly:
+
+```bash
+bun scripts/book/render-candidate.ts nb --chapters=1
+```
+
+which writes `Plurality-norwegian_ch-1.pdf` beside it, leaving the full book alone. That is
+what a reviewer is handed: the same chapter in each edition, three files whose names say
+which is which. `publication/README.md` has the naming rule and why upstream's own output
+is named differently.
+
 In CI these are one matrix job per edition with `fail-fast` off, and each is skipped where
 its source layer is absent. That is what lets the same workflow run on both branches:
 `simplify` has no `contents/norwegian/`, so the `nb` job reports a skip rather than a
@@ -97,6 +110,7 @@ release manifest, untouched by any of this.
 ## Adding another edition
 
 Register it in `configs` in `scripts/book/build.ts`, add it to `FORK_EDITIONS`, and add its
-`edition:*` tasks and a matrix entry. An edition in a language that
+`edition:*` tasks and a matrix entry. Its output name and directory follow from `filePrefix`
+with no further change. An edition in a language that
 `scripts/credits.json` does not carry supplies its own `categoryLabels` there rather than
 adding a key to that file, which is upstream's and would conflict on every sync.

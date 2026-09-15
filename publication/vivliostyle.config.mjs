@@ -13,10 +13,11 @@ const author = process.env.BOOK_AUTHOR || (isZh ? '衛谷倫、唐鳳、⿻社�
 const language = process.env.BOOK_LANGUAGE || (isZh ? 'zh-TW' : 'en')
 const cover = process.env.BOOK_COVER || (isZh ? 'scripts/cover-image.zh-tw.png' : 'scripts/cover-image.png')
 
-// An excerpt is written beside the full book rather than over it, so a reviewer can hold
-// one chapter without destroying the edition's own output.
-const suffix = process.env.BOOK_OUTPUT_SUFFIX || ''
-const prefix = `vivliostyle-${locale}${suffix}-candidate`
+// Where the render lands and what it is called are decided by editionOutput() in
+// scripts/book/build.ts and passed in, so the rule lives in one place. The fallback is
+// upstream's full-book name, for a direct `vivliostyle build --config` invocation.
+const outputDir = process.env.BOOK_OUTPUT_DIR || 'candidate'
+const stem = process.env.BOOK_OUTPUT_STEM || `vivliostyle-${locale}-candidate`
 
 export default {
   title,
@@ -37,11 +38,11 @@ export default {
   },
   output: [
     {
-      path: join(outputRoot, 'candidate', `${prefix}.pdf`),
+      path: join(outputRoot, outputDir, `${stem}.pdf`),
       format: 'pdf'
     },
     {
-      path: join(outputRoot, 'candidate', `${prefix}.epub`),
+      path: join(outputRoot, outputDir, `${stem}.epub`),
       format: 'epub'
     }
   ]
