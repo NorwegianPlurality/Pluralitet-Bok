@@ -212,5 +212,6 @@ honours that once the driver is enabled.
 - `docs/translation/audience.md` — who this edition is for, and the register that follows
 - `docs/translation/audience/` — one note per chapter, same filename as the chapter
 - `docs/translation/editions.md` — the two editions, their branches, and how each is built
+- `docs/translation/publishing.md` — publishing an edition: not set up, and the parked release workflow
 - `translation/glossary.tsv` — term decisions
 - `translation/chapter-titles.tsv` — chapter ids and Norwegian titles
