@@ -35,26 +35,30 @@ Its shape has been checked but it has never run. Treat the first dispatch as a
 dry run: it has a `publish` checkbox that builds and validates without releasing
 anything.
 
-## What is still undecided
+## What is settled, and what is left
 
-These are the reasons it is parked rather than active. Each changes what the
-file should say:
+`releases.md` settles what a version number means, and with it two of the three
+questions that kept this parked:
 
-1. **When is an edition worth publishing?** Both fork editions are partial and
-   are assembled that way on purpose. A release today would publish mostly
-   absence. `vp run translation:progress` reports where each stage stands; no
-   threshold has been agreed, and it may be editorial judgment rather than a
-   number.
+1. **When is an edition worth publishing?** Settled: as soon as it builds and
+   checks clean. A `0.x` release is a machine draft and promises nothing about
+   completeness, so releasing a partial edition is the point rather than a
+   problem. The chapter count belongs in the release notes.
+   `vp run translation:progress` reports where each stage stands.
 
-2. **Which edition does a tag mean?** A dispatch picks one from a menu. A pushed
-   `no-v0.1` tag carries no edition, and the draft assumes Norwegian. If the
-   simplified English is ever published too, tags need to say which — `nb-v0.1`
-   and `simple-v0.1`, or one release carrying both.
+2. **Which edition does a tag mean?** Settled: the tag carries the edition id the
+   tooling already uses — `nb-v0.1`, `en-simple-v0.1`. The draft's `no-v*`
+   trigger and its `EDITION=nb` fallback for a pushed tag have to be updated to
+   match before it is activated.
 
-3. **Does an edition need its own front matter first?** A release is the book,
-   not a manuscript: a title page, a translator's colophon and a note that the
-   text is in progress are the editor's to write. The draft publishes whatever
-   the assembler produces, which today has no such apparatus.
+3. **Does an edition need its own front matter first?** Partly, and this is the
+   one still open. A `0.x` release must carry a line saying it is an unreviewed
+   machine translation, in the edition's own language, and no edition's front
+   matter has one. The title page, translator's colophon and the rest of the
+   apparatus are a `1.0` gate rather than a blocker for the first release.
+
+What is left before the workflow moves into `.github/workflows/` is therefore
+buildable rather than editorial: the provenance line, and the tag prefixes.
 
 An earlier note, `publication-branches.md`, proposed turning `simplify` into a
 generated publication branch. It was removed in `d1f420a` because `2a48f1f`
@@ -66,4 +70,5 @@ ever wanted; it does not describe how the repository works now.
 ## Related
 
 - `editions.md` — the editions, their branches, and how to build one
+- `releases.md` — what a version number promises, and the three release paradigms
 - `../../publication/README.md` — what the rendered files are called, and why
