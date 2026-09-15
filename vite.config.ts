@@ -28,6 +28,10 @@ export default defineConfig({
       'edition:validate:nb': { command: 'bun scripts/book/validate-translation.ts --stage=translate' },
       'edition:assemble:en-simple': { command: 'bun scripts/book/build.ts en-simple dist/publication/en-simple' },
       'edition:assemble:nb': { command: 'bun scripts/book/build.ts nb dist/publication/nb' },
+      // Whole-edition PDF + EPUB via Vivliostyle. For one chapter, call the renderer
+      // directly: `bun scripts/book/render-candidate.ts en-simple --chapters=1`.
+      'edition:pdf:en-simple': { command: 'bun scripts/book/render-candidate.ts en-simple' },
+      'edition:pdf:nb': { command: 'bun scripts/book/render-candidate.ts nb' },
       'edition:check:en-simple': { command: ['vp run edition:validate:en-simple', 'vp run edition:assemble:en-simple'] },
       'edition:check:nb': { command: ['vp run edition:validate:nb', 'vp run edition:assemble:nb'] },
       'book:assemble': { command: 'bun scripts/book/build.ts all dist/publication' },

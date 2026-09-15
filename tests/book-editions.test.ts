@@ -7,7 +7,9 @@ import {
   FORK_EDITIONS,
   UPSTREAM_EDITIONS,
   assembleLocale,
+  editionMetadata,
   isEdition,
+  parseChapters,
   type Locale,
 } from '../scripts/book/build'
 
@@ -127,5 +129,81 @@ describe('edition identity', () => {
     writeFileSync(join(root, 'contents', 'norwegian', '2-1-test.md'), '# Kapittel\nTekst\n')
     // Distinct prefixes matter once both land in dist/publication for review.
     expect(assemble(root, 'en-simple').markdown).not.toEqual(assemble(root, 'nb').markdown)
+  })
+})
+
+describe('chapter excerpts', () => {
+  const both = () => {
+    const root = editionRoot('simplified-english', {
+      '1-preface.md': '# Preface\nOpening\n',
+      '3-1-living.md': '# Living\nLater\n',
+    })
+    writeFileSync(join(root, 'contents', 'simplified-english', '0-1-authors.md'), '# Authors\nFront matter\n')
+    return root
+  }
+
+  test('keeps only the requested chapter', () => {
+    // What a reviewer signs off on is one chapter in all three editions side by side, and
+    // a pipeline that can only emit the whole book cannot produce that until the whole
+    // book exists.
+    const { markdown } = assembleLocale(both(), 'en-simple', '2024-01-02', credits, { chapters: ['1'] })
+    expect(markdown).toContain('Opening')
+    expect(markdown).not.toContain('Later')
+  })
+
+  test('matches a chapter id without matching a longer one', () => {
+    const root = editionRoot('simplified-english', {
+      '1-preface.md': '# Preface\nOpening\n',
+      '10-other.md': '# Other\nUnrelated\n',
+    })
+    const { markdown } = assembleLocale(root, 'en-simple', '2024-01-02', credits, { chapters: ['1'] })
+    expect(markdown).toContain('Opening')
+    expect(markdown).not.toContain('Unrelated')
+  })
+
+  test('drops the front matter and the credit ledger', () => {
+    // They belong to the book, not the chapter, and would dwarf it in the reviewer's hands.
+    const { markdown } = assembleLocale(both(), 'en-simple', '2024-01-02', credits, { chapters: ['1'] })
+    expect(markdown).not.toContain('Front matter')
+    expect(markdown).not.toContain('Alice')
+  })
+
+  test('keeps the front matter when no chapter is named', () => {
+    const { markdown } = assembleLocale(both(), 'en-simple', '2024-01-02', credits)
+    expect(markdown).toContain('Front matter')
+    expect(markdown).toContain('Alice')
+  })
+
+  test('refuses a chapter the edition does not have', () => {
+    // Silence here would hand the reviewer a PDF containing only a title page.
+    expect(() => assembleLocale(both(), 'en-simple', '2024-01-02', credits, { chapters: ['7-0'] })).toThrow(/7-0/)
+  })
+
+  test('takes several chapters at once', () => {
+    const { markdown } = assembleLocale(both(), 'en-simple', '2024-01-02', credits, { chapters: ['1', '3-1'] })
+    expect(markdown).toContain('Opening')
+    expect(markdown).toContain('Later')
+  })
+})
+
+describe('chapter argument parsing', () => {
+  test('reads --chapters and --chapter alike', () => {
+    expect(parseChapters(['en-simple', 'out', '--chapters=1,2-0'])).toEqual(['1', '2-0'])
+    expect(parseChapters(['--chapter=1'])).toEqual(['1'])
+  })
+
+  test('is undefined when absent, and rejects an empty list', () => {
+    expect(parseChapters(['en-simple', 'out'])).toBeUndefined()
+    expect(() => parseChapters(['--chapters='])).toThrow(/at least one/)
+  })
+})
+
+describe('edition metadata for the renderer', () => {
+  test('reads each edition’s own document fields', () => {
+    // Parsed from the metadata block rather than duplicated, so the PDF and the manuscript
+    // cannot disagree about which edition they are.
+    expect(editionMetadata('nb')).toMatchObject({ title: 'Pluralitet', language: 'nb' })
+    expect(editionMetadata('en-simple')).toMatchObject({ title: 'Plurality', language: 'en' })
+    expect(editionMetadata('zh-TW').language).toBe('zh-TW')
   })
 })
