@@ -80,10 +80,12 @@ const configs: Record<Locale, LocaleConfig> = {
     sections: { 1: 'Section 1: Preface', 2: 'Section 2: Introduction', 3: 'Section 3: Plurality', 4: 'Section 4: Freedom', 5: 'Section 5: Democracy', 6: 'Section 6: Impact', 7: 'Section 7: Forward', 0: 'Endorsements' },
   },
   // Section names and the endorsements heading follow translation/chapter-titles.tsv, so
-  // the assembled book and the registry cannot drift apart.
+  // the assembled book and the registry cannot drift apart. The cover is the edition's
+  // own: the wordmark reads PLURALITET, matching the title below and the glossary, and
+  // the subtitle and byline are Norwegian. `vp run design:cover:nb` rebuilds it.
   nb: {
     directory: 'norwegian', filePrefix: 'Plurality-norwegian', labels: 'en', endorsement: 'en', endorsementFile: '0-0-endorsements.md', footnoteSeparator: '-', partial: true,
-    metadata: 'title: Pluralitet\nsubtitle: "Fremtiden for samarbeidsteknologi og demokrati"\nauthor: "E. Glen Weyl, Audrey Tang og ⿻-fellesskapet"\nlang: nb\ncover-image: scripts/cover-image.png \nmainfont: "Noto Serif"\nlinestretch: 1.25',
+    metadata: 'title: Pluralitet\nsubtitle: "Fremtiden til samarbeidsteknologi og demokrati"\nauthor: "E. Glen Weyl, Audrey Tang og ⿻-fellesskapet"\nlang: nb\ncover-image: scripts/cover-image.nb.png \nmainfont: "Noto Serif"\nlinestretch: 1.25',
     sections: { 1: 'Del 1: Forord', 2: 'Del 2: Innledning', 3: 'Del 3: Pluralitet', 4: 'Del 4: Frihet', 5: 'Del 5: Demokrati', 6: 'Del 6: Virkning', 7: 'Del 7: Veien videre', 0: 'Anbefalinger' },
     categoryLabels: {
       Writing: 'Skriving', Editing: 'Redigering', Technical: 'Teknisk', Translation: 'Oversettelse',

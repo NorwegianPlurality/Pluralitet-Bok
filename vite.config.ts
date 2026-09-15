@@ -17,6 +17,14 @@ export default defineConfig({
       // merge=ours entries there are silently ignored and the conflicts come back.
       'setup:git': { command: 'git config merge.ours.driver true' },
 
+      // The Norwegian cover is generated, not hand-drawn. The wordmark step takes
+      // upstream's PLURALITY apart into letters and reassembles it as PLURALITET, so the
+      // colour scheme is data in that script rather than geometry to redraw; the cover
+      // step copies upstream's ⿻ mark pixel-for-pixel and re-sets only the wordmark,
+      // subtitle and byline. Run the wordmark first — the cover reads its output.
+      'design:wordmark:nb': { command: 'python3 design/make-wordmark-nb.py' },
+      'design:cover:nb': { command: ['vp run design:wordmark:nb', 'python3 design/make-cover-nb.py'] },
+
       'translation:validate': { command: 'bun scripts/book/validate-translation.ts' },
       'translation:progress': { command: 'bun scripts/translation/refresh-progress.ts' },
       'translation:next': { command: 'bun scripts/translation/next-tasks.ts' },
