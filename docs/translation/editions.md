@@ -107,6 +107,12 @@ them a missing front-matter file is a broken checkout, not work outstanding — 
 an error, and `vp run book:assemble` still builds exactly upstream's two editions and the
 release manifest, untouched by any of this.
 
+## Publishing
+
+Neither fork edition is published anywhere yet, and a release workflow is written but
+parked rather than active. `publishing.md` has what exists, what is parked, and the three
+decisions still open.
+
 ## Adding another edition
 
 Register it in `configs` in `scripts/book/build.ts`, add it to `FORK_EDITIONS`, and add its

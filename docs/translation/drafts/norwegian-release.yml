@@ -1,0 +1,198 @@
+# DRAFT — not active. See docs/translation/publishing.md before using this.
+#
+# This file is parked on purpose. It sits outside .github/workflows/, so GitHub
+# cannot see it and nothing here runs. To try it:
+#
+#     cp docs/translation/drafts/norwegian-release.yml .github/workflows/
+#
+# and read the open questions in publishing.md first — three decisions are still
+# yours to make, and they change what this file should say.
+#
+# ---------------------------------------------------------------------------
+# WHAT IT DOES
+# ---------------------------------------------------------------------------
+# Builds one fork edition and publishes it as a GitHub Release under its own
+# version tag.
+#
+# It is triggered by hand or by a no-v* tag, never by a push to a branch. A
+# translation is signed off by a human, so an upstream typo fix landing on
+# `norwegian` must not republish it mid-review. Each release gets its own tag;
+# there is no rolling `latest` that silently rewrites what people downloaded.
+#
+# This is the fork's own pipeline throughout: `edition:check:*` and
+# `edition:pdf:*`, which run Vivliostyle and need no Docker. Upstream's
+# `book:legacy:*` path is not used and would not work — it renders only
+# upstream's two editions, inside a pandoc/xelatex image.
+#
+# ---------------------------------------------------------------------------
+# WHAT IT DELIBERATELY DOES NOT DO
+# ---------------------------------------------------------------------------
+# Upstream's release job in main.yml carries three things this must not copy:
+# a plurality.net rebuild webhook (whose secret this fork does not hold), a
+# GitHub Pages deploy, and a draft-toggle republish dance that exists to nudge
+# a `published_at` timestamp for that site's feed. None of them have a consumer
+# here. Upstream's asset assertion also requires a hand-uploaded
+# Plurality-english.mp3 that nothing in this repository builds.
+
+name: Publish a fork edition
+
+on:
+  workflow_dispatch:
+    inputs:
+      edition:
+        description: 'Which edition to publish'
+        required: true
+        default: nb
+        type: choice
+        options: [nb, en-simple]
+      version:
+        description: 'Release tag to create, e.g. no-v0.1 (required when publishing)'
+        required: false
+        type: string
+      publish:
+        description: 'Publish a release. Leave unchecked for a build-only dry run.'
+        required: false
+        default: false
+        type: boolean
+  push:
+    tags:
+      # Namespaced so that syncing upstream's tags — including its rolling
+      # `latest` — can never trigger a release here.
+      - 'no-v*'
+
+concurrency:
+  group: fork-release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    # Guards against a fork of this fork publishing from our tags.
+    if: github.repository_owner == 'NorwegianPlurality'
+    outputs:
+      publish: ${{ steps.decide.outputs.publish }}
+      version: ${{ steps.decide.outputs.version }}
+      edition: ${{ steps.decide.outputs.edition }}
+    steps:
+      - name: Decide publish mode, version and edition
+        id: decide
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # A version tag was pushed: always a real release. A tag carries no
+            # edition, so this is the open question publishing.md records —
+            # today it assumes the Norwegian.
+            PUBLISH=true
+            VERSION="${GITHUB_REF#refs/tags/}"
+            EDITION=nb
+          else
+            PUBLISH="${{ inputs.publish }}"
+            VERSION="${{ inputs.version }}"
+            EDITION="${{ inputs.edition }}"
+          fi
+
+          if [ "$PUBLISH" = "true" ] && [ -z "$VERSION" ]; then
+            echo "::error::'publish' was requested but no 'version' was supplied. Provide a tag name such as no-v0.1." >&2
+            exit 1
+          fi
+
+          {
+            echo "publish=$PUBLISH"
+            echo "version=$VERSION"
+            echo "edition=$EDITION"
+          } >> "$GITHUB_OUTPUT"
+          echo "Mode: publish=$PUBLISH version=${VERSION:-<dry run>} edition=$EDITION"
+
+  build:
+    runs-on: ubuntu-latest
+    needs: preflight
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@250f29ce396baf5e8f24498e17c0dfdebabc26eb
+        with:
+          node-version: '24'
+          cache: true
+          run-install: false
+
+      - name: Install dependencies (frozen)
+        run: vp install --frozen-lockfile
+
+      - name: Derive variables
+        run: echo "BOOK_DATE=$(git log -1 --format=%cs)" >> $GITHUB_ENV
+
+      # Stage validation plus assembly: the same gate a pull request passes.
+      - name: Verify and assemble the edition
+        run: vp run edition:check:${{ needs.preflight.outputs.edition }}
+
+      # Typesets it. Writes dist/publication/<edition>/, named after the edition
+      # — see publication/README.md for the naming rule.
+      - name: Typeset the edition
+        run: vp run edition:pdf:${{ needs.preflight.outputs.edition }}
+
+      - name: Upload build
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: edition-${{ needs.preflight.outputs.edition }}-release
+          path: dist/publication/${{ needs.preflight.outputs.edition }}
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [preflight, build]
+    if: needs.preflight.outputs.publish == 'true'
+    permissions:
+      contents: write
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: edition-${{ needs.preflight.outputs.edition }}-release
+          path: dist/edition
+
+      # The renderer already names these for readers — Plurality-norwegian.pdf,
+      # not vivliostyle-nb-candidate.pdf — so there is nothing to rename here.
+      # Excerpts are excluded: a release is the book, not one chapter.
+      - name: Collect release assets
+        run: |
+          set -euo pipefail
+          mkdir -p dist/release
+          found=0
+          for f in dist/edition/*.pdf dist/edition/*.epub; do
+            [ -e "$f" ] || continue
+            case "$(basename "$f")" in
+              *_ch-*) echo "skipping excerpt $(basename "$f")"; continue ;;
+            esac
+            cp "$f" dist/release/
+            found=$((found + 1))
+          done
+          if [ "$found" -eq 0 ]; then
+            echo "::error::No book files to release in dist/edition." >&2
+            exit 1
+          fi
+          ls -la dist/release
+
+      # allowUpdates is off: a version is published once. A second attempt at
+      # the same tag should fail loudly, not rewrite what people downloaded.
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd
+        with:
+          tag: ${{ needs.preflight.outputs.version }}
+          name: "Pluralitet ${{ needs.preflight.outputs.version }}"
+          artifacts: "dist/release/*"
+          artifactErrorsFailBuild: true
+          allowUpdates: false
+          draft: false
+          makeLatest: true
+          body: |
+            ${{ needs.preflight.outputs.edition }} edition, built from ${{ github.sha }}.
+
+            A translation in progress: this release carries the chapters finished
+            at the time it was built, not the whole book.
+
+            Upstream: https://github.com/pluralitybook/plurality
