@@ -2,7 +2,7 @@ import { rmSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { spawnSync, SpawnSyncOptions } from 'node:child_process'
 import { prepareVivliostyle } from './prepare-vivliostyle'
-import { EDITIONS, UPSTREAM_EDITIONS, editionMetadata, isEdition, parseChapters, type Locale } from './build'
+import { EDITIONS, UPSTREAM_EDITIONS, editionMetadata, editionOutput, isEdition, parseChapters, type Locale } from './build'
 import { validateCandidate } from './validate-candidate'
 
 export type SpawnFn = (
@@ -24,12 +24,12 @@ export async function renderLocale(
   chapters?: string[]
 ): Promise<void> {
   // An excerpt gets its own build directory and its own output name, so rendering one
-  // chapter for review never overwrites the edition's full book.
-  const suffix = chapters?.length ? `-ch${chapters.join('_')}` : ''
-  const buildDir = join(outputRoot, '.vivliostyle', `${locale}${suffix}`)
-  const prefix = `vivliostyle-${locale}${suffix}-candidate`
-  const pdfPath = join(outputRoot, 'candidate', `${prefix}.pdf`)
-  const epubPath = join(outputRoot, 'candidate', `${prefix}.epub`)
+  // chapter for review never overwrites the edition's full book. editionOutput decides
+  // both; see there for why the fork's editions are not written to candidate/.
+  const { dir, stem } = editionOutput(locale, chapters)
+  const buildDir = join(outputRoot, '.vivliostyle', stem)
+  const pdfPath = join(outputRoot, dir, `${stem}.pdf`)
+  const epubPath = join(outputRoot, dir, `${stem}.epub`)
 
   // 1. Remove old candidate outputs first to prevent stale output usage
   rmSync(pdfPath, { force: true })
@@ -51,7 +51,8 @@ export async function renderLocale(
     BOOK_AUTHOR: meta.author,
     BOOK_LANGUAGE: meta.language,
     BOOK_COVER: meta.cover,
-    BOOK_OUTPUT_SUFFIX: suffix,
+    BOOK_OUTPUT_DIR: dir,
+    BOOK_OUTPUT_STEM: stem,
   }
 
   const res = spawnFn('bunx', ['vivliostyle', 'build', '--config', 'publication/vivliostyle.config.mjs'], {

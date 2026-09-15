@@ -108,6 +108,36 @@ export function editionMetadata(locale: Locale): { title: string; author: string
   return { title: field('title'), author: field('author'), language: field('lang'), cover: field('cover-image') }
 }
 
+/**
+ * Where a rendered edition is written, and under what name.
+ *
+ * Upstream's finished editions keep the names upstream gave them: `manifest.json`, the
+ * release workflow and `validate-candidate.ts` all resolve `candidate/vivliostyle-en-candidate.pdf`
+ * exactly, and "candidate" there is meaningful — it distinguishes the Vivliostyle renderer
+ * being evaluated from the pandoc pipeline that ships.
+ *
+ * Nothing of the sort is true for this fork's output. Vivliostyle is not a candidate for
+ * `en-simple` or `nb`; it is the only renderer they have, since the legacy path needs
+ * Docker, pandoc and xelatex. Naming their output "candidate" describes a choice that was
+ * never offered. Excerpts are the fork's own invention too, upstream has no name for them.
+ *
+ * So both land beside their manuscript in `dist/publication/<edition>/`, named after the
+ * edition, which is also where `edition:assemble:*` writes and what CI uploads.
+ *
+ *     en      + full book  →  candidate/vivliostyle-en-candidate.pdf
+ *     nb      + full book  →  nb/Plurality-norwegian.pdf
+ *     nb      + chapter 1  →  nb/Plurality-norwegian_ch-1.pdf
+ *     en      + chapter 1  →  en/Plurality-english_ch-1.pdf
+ */
+export function editionOutput(locale: Locale, chapters?: string[]): { dir: string; stem: string } {
+  const isExcerpt = Boolean(chapters?.length)
+  if (UPSTREAM_EDITIONS.includes(locale) && !isExcerpt) {
+    return { dir: 'candidate', stem: `vivliostyle-${locale}-candidate` }
+  }
+  const suffix = isExcerpt ? `_ch-${chapters!.join('_')}` : ''
+  return { dir: locale, stem: `${configs[locale].filePrefix}${suffix}` }
+}
+
 export function validateCredits(value: unknown, locale: Locale = 'en'): Credits {
   if (!value || typeof value !== 'object') throw new Error('Invalid credits: expected an object')
   const credits = value as Partial<Credits>

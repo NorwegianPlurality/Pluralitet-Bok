@@ -8,6 +8,7 @@ import {
   UPSTREAM_EDITIONS,
   assembleLocale,
   editionMetadata,
+  editionOutput,
   isEdition,
   parseChapters,
   type Locale,
@@ -205,5 +206,53 @@ describe('edition metadata for the renderer', () => {
     expect(editionMetadata('nb')).toMatchObject({ title: 'Pluralitet', language: 'nb' })
     expect(editionMetadata('en-simple')).toMatchObject({ title: 'Plurality', language: 'en' })
     expect(editionMetadata('zh-TW').language).toBe('zh-TW')
+  })
+})
+
+describe('where a render is written', () => {
+  test('upstream’s finished editions keep upstream’s names', () => {
+    // manifest.json, validate-candidate.ts and upstream's release workflow all resolve
+    // these exact paths. Renaming them is a change to upstream's interface, not ours.
+    expect(editionOutput('en')).toEqual({ dir: 'candidate', stem: 'vivliostyle-en-candidate' })
+    expect(editionOutput('zh-TW')).toEqual({ dir: 'candidate', stem: 'vivliostyle-zh-TW-candidate' })
+  })
+
+  test('the fork’s editions are named after the edition, not the renderer', () => {
+    // Vivliostyle is not a candidate for these two — it is the only renderer they have,
+    // so "candidate" would describe a choice that was never offered.
+    expect(editionOutput('nb')).toEqual({ dir: 'nb', stem: 'Plurality-norwegian' })
+    expect(editionOutput('en-simple')).toEqual({ dir: 'en-simple', stem: 'Plurality-simplified-english' })
+  })
+
+  test('an excerpt says which chapter it holds, in every edition', () => {
+    // A reviewer is handed one chapter in three editions at once; the three filenames are
+    // the only thing telling them apart on disk.
+    expect(editionOutput('nb', ['1'])).toEqual({ dir: 'nb', stem: 'Plurality-norwegian_ch-1' })
+    expect(editionOutput('en-simple', ['1'])).toEqual({ dir: 'en-simple', stem: 'Plurality-simplified-english_ch-1' })
+    expect(editionOutput('en', ['1'])).toEqual({ dir: 'en', stem: 'Plurality-english_ch-1' })
+  })
+
+  test('an excerpt never overwrites the edition’s full book', () => {
+    for (const edition of EDITIONS) {
+      const book = editionOutput(edition)
+      const excerpt = editionOutput(edition, ['1'])
+      expect(`${excerpt.dir}/${excerpt.stem}`).not.toEqual(`${book.dir}/${book.stem}`)
+    }
+  })
+
+  test('a multi-chapter excerpt names every chapter it holds', () => {
+    expect(editionOutput('nb', ['1', '2-0']).stem).toBe('Plurality-norwegian_ch-1_2-0')
+  })
+
+  test('every edition lands somewhere distinct', () => {
+    const paths = EDITIONS.map((e) => { const o = editionOutput(e); return `${o.dir}/${o.stem}` })
+    expect(new Set(paths).size).toBe(EDITIONS.length)
+  })
+
+  test('each fork edition is written beside its own manuscript', () => {
+    // edition:assemble:* writes dist/publication/<edition>/, and CI uploads that directory
+    // as the edition's artifact. Rendering into it means the PDF ships with the manuscript
+    // for free rather than needing its own upload.
+    for (const edition of FORK_EDITIONS) expect(editionOutput(edition).dir).toBe(edition)
   })
 })
